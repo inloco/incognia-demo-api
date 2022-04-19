@@ -28,7 +28,7 @@ gem "bootsnap", require: false
 # gem "rack-cors"
 
 # TODO: change to public one when published
-gem "incognia_api", path: "/home/juliana.lucena/dev/work/incognia-ruby", require: 'incognia'
+gem "incognia_api", github: 'inloco/incognia-ruby', branch: 'main', require: 'incognia'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

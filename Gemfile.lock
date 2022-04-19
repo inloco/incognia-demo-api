@@ -1,5 +1,7 @@
-PATH
-  remote: /home/juliana.lucena/dev/work/incognia-ruby
+GIT
+  remote: https://github.com/inloco/incognia-ruby.git
+  revision: f6c08e9c1dccbd45727a642cbc4e1277ef54bd7f
+  branch: main
   specs:
     incognia_api (0.1.0)
       faraday
