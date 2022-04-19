@@ -27,10 +27,14 @@ gem "bootsnap", require: false
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem "rack-cors"
 
+# TODO: change to public one when published
+gem "incognia_api", path: "/home/juliana.lucena/dev/work/incognia-ruby", require: 'incognia'
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
   gem 'rspec-rails', '~> 5.0.0'
+  gem 'dotenv-rails', '~> 2.7.6'
 end
 
 group :development do
