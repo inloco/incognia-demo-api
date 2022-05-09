@@ -85,20 +85,9 @@ RSpec.describe "Signups", type: :request do
 
   describe "POST /create" do
     subject(:dispatch_request) do
-      post "/signups", params: { structured_address: address }, headers: headers
+      post "/signups", params: params, headers: headers
     end
-    let(:address) do
-      {
-        country_name:"United States of America",
-        country_code:"US",
-        state:"NY",
-        city:"New York City",
-        borough:"Manhattan",
-        street:"W 34th St.",
-        number:"20",
-        postal_code:"10001"
-      }
-    end
+    let(:params) { {} }
     let(:headers) do
       {
         "ACCEPT" => "application/json",
@@ -113,19 +102,14 @@ RSpec.describe "Signups", type: :request do
       allow(Incognia::Api).to receive(:new).and_return(incognia_api)
 
       allow(incognia_api).to receive(:register_signup)
-        .with(
-          installation_id: installation_id,
-          address: hash_including(address)
-        )
+        .with(installation_id: installation_id)
         .and_return(signup)
     end
     let(:incognia_api) { instance_double(Incognia::Api) }
 
-    it 'requests Incognia with default locale' do
-      enriched_address = address.merge(locale: SignupsController::EN_US_LOCALE)
-
+    it 'requests Incognia with installation_id' do
       expect(incognia_api).to receive(:register_signup)
-        .with(installation_id: installation_id, address: enriched_address)
+        .with(installation_id: installation_id)
         .and_return(signup)
 
       dispatch_request
@@ -145,6 +129,36 @@ RSpec.describe "Signups", type: :request do
 
     it_behaves_like 'handle Incognia API errors' do
       let(:method) { :register_signup }
+    end
+
+    context 'when structured address is informed' do
+      let(:params) { { structured_address: structured_address } }
+      let(:structured_address) do
+        {
+          country_name:"United States of America",
+          country_code:"US",
+          state:"NY",
+          city:"New York City",
+          borough:"Manhattan",
+          street:"W 34th St.",
+          number:"20",
+          postal_code:"10001"
+        }
+      end
+      let(:enriched_address) do
+        Incognia::Address::Structured.new(
+          **structured_address.merge(locale: SignupsController::EN_US_LOCALE)
+        )
+      end
+
+      it 'requests Incognia w/ installation_id and address w/ default locale' do
+        allow(incognia_api).to receive(:register_signup) do |args|
+          expect(args[:installation_id]).to eq(installation_id)
+          expect(args[:address].to_hash).to eq(enriched_address.to_hash)
+        end.and_return(signup)
+
+        dispatch_request
+      end
     end
   end
 end

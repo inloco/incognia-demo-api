@@ -6,7 +6,8 @@ class SignupsController < ApplicationController
 
   def create
     installation_id = request.headers[INCOGNIA_INSTALLATION_ID_HEADER]
-    address = params.require(:structured_address)
+    address = params
+      .fetch(:structured_address, {})
       .permit(
         :country_name,
         :country_code,
@@ -16,12 +17,18 @@ class SignupsController < ApplicationController
         :street,
         :number,
         :postal_code
-      ).to_h
-    address.merge!(locale: EN_US_LOCALE) # For simplicity sake
+    ).to_h.deep_symbolize_keys
 
-    assessment = incognia_api.register_signup(
-      installation_id: installation_id, address: address
-    ).to_h
+    signup_attrs = { installation_id: installation_id }
+    if address.present?
+      address.merge!(locale: EN_US_LOCALE) # For simplicity sake
+
+      signup_attrs.merge!(
+        address: Incognia::Address::Structured.new(**address)
+      )
+    end
+
+    assessment = incognia_api.register_signup(**signup_attrs).to_h
 
     signup = assessment.slice(:id)
 
