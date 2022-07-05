@@ -1,0 +1,16 @@
+services:
+  db:
+    network_mode: host
+    image: postgres
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+  web:
+    network_mode: host
+    build: .
+    command: bash -c "bundle exec rails s -b '0.0.0.0'"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
