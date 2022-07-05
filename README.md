@@ -30,5 +30,4 @@ To check if everything is fine, you can run the test suite with `rake spec`.
 
 1. Generate Incognia API credentials at Incognia dashboard
 2. Set the `client_id` and `secret` at `.env` file
-1. Build the image running the follow command from repo root: `docker build . -t incognia-demo-api`
-2. Run the image: `docker run -p 3000:3000 --env-file .env incognia-demo-api:latest` (API will listen at port 3000)
+3. Run Docker Compose: `docker-compose up` (API will listen at port 3000)
