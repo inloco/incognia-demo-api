@@ -4,7 +4,7 @@ RSpec.describe "Signups", type: :request do
   shared_examples_for 'handle Incognia API errors' do
     context 'when API returns 404' do
       before do
-        allow(incognia_api).to receive(method)
+        allow(service).to receive(:call)
           .and_raise(Incognia::APIError.new('', status: 404))
       end
 
@@ -17,7 +17,7 @@ RSpec.describe "Signups", type: :request do
 
     context 'when API returns 400' do
       before do
-        allow(incognia_api).to receive(method)
+        allow(service).to receive(:call)
           .and_raise(Incognia::APIError.new('', status: 400, body: error_message))
       end
       let(:error_message) { { errors: 'Some error'}.to_json }
@@ -31,7 +31,7 @@ RSpec.describe "Signups", type: :request do
 
     context 'when API returns other error' do
       before do
-        allow(incognia_api).to receive(method)
+        allow(service).to receive(:call)
           .and_raise(Incognia::APIError.new(''))
       end
 
@@ -44,23 +44,18 @@ RSpec.describe "Signups", type: :request do
   end
 
   describe "GET /show" do
-    subject(:dispatch_request) { get "/signups/#{id}" }
-
-    let(:id) { SecureRandom.uuid }
-    let(:signup) { OpenStruct.new(id: id) }
+    subject(:dispatch_request) { get "/signups/#{signup.incognia_signup_id}" }
+    let(:signup) { create(:signup) }
 
     before do
-      allow(Incognia::Api).to receive(:new).and_return(incognia_api)
-
-      allow(incognia_api).to receive(:get_signup_assessment)
-        .with(signup_id: id)
+      allow(Signups::GetReassessment).to receive(:call)
+        .with(incognia_signup_id: signup.incognia_signup_id)
         .and_return(signup)
     end
-    let(:incognia_api) { instance_double(Incognia::Api) }
 
-    it 'requests Incognia with informed id' do
-      expect(incognia_api).to receive(:get_signup_assessment)
-        .with(signup_id: id)
+    it "invokes singups reassessment service" do
+      allow(Signups::GetReassessment).to receive(:call)
+        .with(incognia_signup_id: signup.incognia_signup_id)
         .and_return(signup)
 
       dispatch_request
@@ -75,11 +70,11 @@ RSpec.describe "Signups", type: :request do
     it "returns signup as JSON" do
       dispatch_request
 
-      expect(response.body).to eq(signup.to_h.to_json)
+      expect(response.body).to eq({ id: signup.incognia_signup_id }.to_json)
     end
 
     it_behaves_like 'handle Incognia API errors' do
-      let(:method) { :get_signup_assessment }
+      let(:service) { Signups::GetReassessment }
     end
   end
 
@@ -96,21 +91,17 @@ RSpec.describe "Signups", type: :request do
     end
     let(:installation_id) { SecureRandom.hex }
 
-    let(:signup) { OpenStruct.new(id: SecureRandom.uuid) }
+    let(:signup) { create(:signup) }
 
     before do
-      allow(Incognia::Api).to receive(:new).and_return(incognia_api)
-
-      allow(incognia_api).to receive(:register_signup)
+      allow(Signups::Create).to receive(:call)
         .with(installation_id: installation_id)
         .and_return(signup)
     end
-    let(:incognia_api) { instance_double(Incognia::Api) }
 
-    it 'requests Incognia with installation_id' do
-      expect(incognia_api).to receive(:register_signup)
+    it "invokes singups create service" do
+      expect(Signups::Create).to receive(:call)
         .with(installation_id: installation_id)
-        .and_return(signup)
 
       dispatch_request
     end
@@ -124,16 +115,16 @@ RSpec.describe "Signups", type: :request do
     it "returns registered signup as JSON" do
       dispatch_request
 
-      expect(response.body).to eq(signup.to_h.to_json)
+      expect(response.body).to eq({ id: signup.incognia_signup_id }.to_json)
     end
 
     it_behaves_like 'handle Incognia API errors' do
-      let(:method) { :register_signup }
+      let(:service) { Signups::Create }
     end
 
     context 'when structured address is informed' do
-      let(:params) { { structured_address: structured_address } }
-      let(:structured_address) do
+      let(:params) { { structured_address: address } }
+      let(:address) do
         {
           country_name:"United States of America",
           country_code:"US",
@@ -145,17 +136,11 @@ RSpec.describe "Signups", type: :request do
           postal_code:"10001"
         }
       end
-      let(:enriched_address) do
-        Incognia::Address::Structured.new(
-          **structured_address.merge(locale: SignupsController::EN_US_LOCALE)
-        )
-      end
 
-      it 'requests Incognia w/ installation_id and address w/ default locale' do
-        allow(incognia_api).to receive(:register_signup) do |args|
-          expect(args[:installation_id]).to eq(installation_id)
-          expect(args[:address].to_hash).to eq(enriched_address.to_hash)
-        end.and_return(signup)
+      it "invokes singups create service with address info" do
+        expect(Signups::Create).to receive(:call)
+          .with(installation_id: installation_id, address: address)
+          .and_return(signup)
 
         dispatch_request
       end

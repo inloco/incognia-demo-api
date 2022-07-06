@@ -1,11 +1,9 @@
 class SignupsController < ApplicationController
   INCOGNIA_INSTALLATION_ID_HEADER = 'Incognia-Installation-ID'.freeze
-  EN_US_LOCALE = 'en-US'.freeze
 
   rescue_from Incognia::APIError, with: :handle_api_errors
 
   def create
-    installation_id = request.headers[INCOGNIA_INSTALLATION_ID_HEADER]
     address = params
       .fetch(:structured_address, {})
       .permit(
@@ -19,28 +17,20 @@ class SignupsController < ApplicationController
         :postal_code
     ).to_h.deep_symbolize_keys
 
-    signup_attrs = { installation_id: installation_id }
-    if address.present?
-      address.merge!(locale: EN_US_LOCALE) # For simplicity sake
+    signup_params = {
+      installation_id: request.headers[INCOGNIA_INSTALLATION_ID_HEADER],
+      address: address,
+    }.delete_if { |k, v| v.empty? }
 
-      signup_attrs.merge!(
-        address: Incognia::Address::Structured.new(**address)
-      )
-    end
+    signup = Signups::Create.call(signup_params)
 
-    assessment = incognia_api.register_signup(**signup_attrs).to_h
-
-    signup = assessment.slice(:id)
-
-    render json: signup
+    render json: { id: signup.incognia_signup_id }
   end
 
   def show
-    assessment = incognia_api.get_signup_assessment(signup_id: params[:id]).to_h
+    signup = Signups::GetReassessment.call(incognia_signup_id: params[:id])
 
-    signup = assessment.slice(:id)
-
-    render json: signup
+    render json: { id: signup.incognia_signup_id }
   end
 
   private
@@ -56,11 +46,5 @@ class SignupsController < ApplicationController
     else
       render nothing: true, status: 500
     end
-  end
-
-  def incognia_api
-    @incognia_api ||= Incognia::Api.new(
-      client_id: ENV['INCOGNIA_CLIENT_ID'], client_secret: ENV['INCOGNIA_SECRET']
-    )
   end
 end
