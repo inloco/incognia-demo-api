@@ -9,6 +9,7 @@ module Signups
     validates :account_id, presence: true
     validates :installation_id, presence: true
     validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+    validate :email_uniqueness
 
     def submit
       return unless valid?
@@ -21,9 +22,17 @@ module Signups
         address: incognia_signup_attrs[:address]&.to_hash,
         incognia_signup_id: assessment.id
       )
+    rescue ActiveRecord::RecordNotUnique
+      errors.add(:email, :taken)
+
+      nil
     end
 
     private
+
+    def email_uniqueness
+      errors.add(:email, :taken) if Signup.exists?(email: email)
+    end
 
     def incognia_signup_attrs
       return @incognia_signup_attrs if @incognia_signup_attrs
