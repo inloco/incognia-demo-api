@@ -44,6 +44,9 @@ group :development, :test do
 
   # Generates fake data
   gem 'faker', '~> 2.21'
+
+  # One-liners to test common Rails functionality
+  gem 'shoulda-matchers', '~> 5.0'
 end
 
 group :development do
