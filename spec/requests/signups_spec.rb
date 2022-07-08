@@ -70,7 +70,7 @@ RSpec.describe "Signups", type: :request do
     it "returns signup as JSON" do
       dispatch_request
 
-      expect(response.body).to eq({ id: signup.incognia_signup_id }.to_json)
+      expect(response.body).to eq(SignupSerializer.new(signup: signup).to_json)
     end
 
     it_behaves_like 'handle Incognia API errors' do
@@ -130,7 +130,7 @@ RSpec.describe "Signups", type: :request do
       it "returns registered signup as JSON" do
         dispatch_request
 
-        expect(response.body).to eq({ id: signup.incognia_signup_id }.to_json)
+        expect(response.body).to eq(SignupSerializer.new(signup: signup).to_json)
       end
 
       it_behaves_like 'handle Incognia API errors' do
