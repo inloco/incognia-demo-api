@@ -4,7 +4,8 @@ class IncogniaApi
   include Singleton
 
   extend Forwardable
-  def_delegators :incognia_api, :register_signup, :get_signup_assessment
+  def_delegators :incognia_api, :register_signup, :get_signup_assessment,
+    :register_login
 
   private
 

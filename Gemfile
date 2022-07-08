@@ -28,7 +28,7 @@ gem "bootsnap", require: false
 # gem "rack-cors"
 
 # Incognia library
-gem "incognia_api", '~> 0.2', require: 'incognia'
+gem "incognia_api", '~> 0.3', require: 'incognia'
 
 # Ruby interface to the PostgreSQL
 gem 'pg', '~> 1.4'
