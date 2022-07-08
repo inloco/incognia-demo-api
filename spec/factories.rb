@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :signup do
+  factory :user do
     address do
       {
         structured_address:{

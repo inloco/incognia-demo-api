@@ -39,19 +39,19 @@ RSpec.describe Signups::CreateForm, type: :model do
         submit
       end
 
-      it "creates a signup" do
-        expect { submit }.to change(Signup, :count).by(1)
+      it "creates a user" do
+        expect { submit }.to change(User, :count).by(1)
 
-        created_signup = Signup.last
-        expect(created_signup.account_id).to eq(account_id)
-        expect(created_signup.email).to eq(email)
-        expect(created_signup.incognia_signup_id).to eq(signup_assessment.id)
+        created_user = User.last
+        expect(created_user.account_id).to eq(account_id)
+        expect(created_user.email).to eq(email)
+        expect(created_user.incognia_signup_id).to eq(signup_assessment.id)
       end
 
-      it "returns created signup" do
-        created_signup = submit
+      it "returns created user" do
+        created_user = submit
 
-        expect(created_signup).to eq(Signup.last)
+        expect(created_user).to eq(User.last)
       end
 
       context 'when address is informed' do
@@ -113,8 +113,8 @@ RSpec.describe Signups::CreateForm, type: :model do
         submit
       end
 
-      it 'does not create a signup' do
-        expect { submit }.to_not change(Signup, :count)
+      it 'does not create a user' do
+        expect { submit }.to_not change(User, :count)
       end
 
       it 'returns falsy' do

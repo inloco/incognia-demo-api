@@ -44,19 +44,19 @@ RSpec.describe "Signups", type: :request do
   end
 
   describe "GET /show" do
-    subject(:dispatch_request) { get "/signups/#{signup.incognia_signup_id}" }
-    let(:signup) { create(:signup) }
+    subject(:dispatch_request) { get "/signups/#{user.incognia_signup_id}" }
+    let(:user) { create(:user) }
 
     before do
       allow(Signups::GetReassessment).to receive(:call)
-        .with(incognia_signup_id: signup.incognia_signup_id)
-        .and_return(signup)
+        .with(incognia_signup_id: user.incognia_signup_id)
+        .and_return(user)
     end
 
     it "invokes singups reassessment service" do
       allow(Signups::GetReassessment).to receive(:call)
-        .with(incognia_signup_id: signup.incognia_signup_id)
-        .and_return(signup)
+        .with(incognia_signup_id: user.incognia_signup_id)
+        .and_return(user)
 
       dispatch_request
     end
@@ -70,7 +70,7 @@ RSpec.describe "Signups", type: :request do
     it "returns signup as JSON" do
       dispatch_request
 
-      expect(response.body).to eq(SignupSerializer.new(signup: signup).to_json)
+      expect(response.body).to eq(SignupSerializer.new(user: user).to_json)
     end
 
     it_behaves_like 'handle Incognia API errors' do
@@ -106,10 +106,10 @@ RSpec.describe "Signups", type: :request do
           .with(params.merge(installation_id: installation_id))
           .and_return(form)
 
-        allow(form).to receive(:submit).and_return(signup)
+        allow(form).to receive(:submit).and_return(user)
       end
       let(:form) { instance_double(Signups::CreateForm) }
-      let(:signup) { create(:signup) }
+      let(:user) { create(:user) }
 
       it "invokes singups create form" do
         allow(Signups::CreateForm).to receive(:new)
@@ -130,7 +130,7 @@ RSpec.describe "Signups", type: :request do
       it "returns registered signup as JSON" do
         dispatch_request
 
-        expect(response.body).to eq(SignupSerializer.new(signup: signup).to_json)
+        expect(response.body).to eq(SignupSerializer.new(user: user).to_json)
       end
 
       it_behaves_like 'handle Incognia API errors' do

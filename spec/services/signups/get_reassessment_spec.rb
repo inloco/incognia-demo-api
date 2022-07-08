@@ -5,10 +5,10 @@ RSpec.describe Signups::GetReassessment, type: :service do
     subject(:get) do
       described_class.call(incognia_signup_id: id)
     end
-    let(:id) { signup.incognia_signup_id }
+    let(:id) { user.incognia_signup_id }
 
-    let(:signup) { create(:signup) }
-    let(:signup_assessment) { OpenStruct.new(id: signup.incognia_signup_id) }
+    let(:user) { create(:user) }
+    let(:signup_assessment) { OpenStruct.new(id: user.incognia_signup_id) }
 
     before do
       allow(IncogniaApi.instance).to receive(:get_signup_assessment)
@@ -24,11 +24,11 @@ RSpec.describe Signups::GetReassessment, type: :service do
       get
     end
 
-    it "returns the signup" do
-      expect(get).to eq(signup)
+    it "returns the user" do
+      expect(get).to eq(user)
     end
 
-    context 'when does not exist signup with informed id' do
+    context 'when does not exist user with informed id' do
       let(:id) { SecureRandom.uuid }
 
       it 'raises not found error' do
