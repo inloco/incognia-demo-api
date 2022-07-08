@@ -8,6 +8,8 @@ module Signin
     validates :installation_id, presence: true
 
     def submit
+      return if invalid?
+
       assessment = IncogniaApi.instance.register_login(
         account_id: user.account_id,
         installation_id: installation_id,

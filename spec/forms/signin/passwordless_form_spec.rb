@@ -83,5 +83,29 @@ RSpec.describe Signin::PasswordlessForm, type: :model do
       it_behaves_like 'generate and send otp code to email', :high_risk
       it_behaves_like 'generate and send otp code to email', :unknown_risk
     end
+
+    context 'when attributes are invalid' do
+      let(:params) { {} }
+
+      it 'does not request Incognia' do
+        expect(IncogniaApi.instance).to_not receive(:register_login)
+
+        submit
+      end
+
+      it 'does not generate a signin code' do
+        expect(Signin::GenerateSigninCode).to_not receive(:call)
+
+        submit
+      end
+
+      it 'does not send email with generated code' do
+        expect(SessionMailer).to_not receive(:otp_email)
+      end
+
+      it 'returns falsy' do
+        expect(submit).to be_falsy
+      end
+    end
   end
 end
