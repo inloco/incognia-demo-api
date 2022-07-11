@@ -11,7 +11,7 @@ module Signups
     validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
     def submit
-      return unless valid?
+      return if invalid?
 
       assessment = IncogniaApi.instance.register_signup(**incognia_signup_attrs)
 
