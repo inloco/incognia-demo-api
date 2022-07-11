@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
     user = form.submit
 
     if user
-      render json: SessionSerializer.new(user:).to_json
+      render json: SessionSerializer.new(user:)
     elsif form.errors.any?
       render json: { errors: form.errors.to_hash }, status: :unprocessable_entity
     else
