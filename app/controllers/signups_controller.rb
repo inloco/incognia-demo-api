@@ -12,7 +12,7 @@ class SignupsController < ApplicationController
         :number,
         :postal_code
       ]
-    ).to_hash.delete_if { |k, v| v.empty? }
+    ).to_hash.delete_if { |k, v| v.blank? }
 
     signup_params
       .merge!(installation_id: request.headers[INCOGNIA_INSTALLATION_ID_HEADER])
