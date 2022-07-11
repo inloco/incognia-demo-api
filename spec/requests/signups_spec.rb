@@ -94,14 +94,14 @@ RSpec.describe "Signups", type: :request do
 
         let(:address) do
           {
-            country_name:"United States of America",
-            country_code:"US",
-            state:"NY",
-            city:"New York City",
-            borough:"Manhattan",
-            street:"W 34th St.",
-            number:"20",
-            postal_code:"10001"
+            country_name: Faker::Address.country,
+            country_code: Faker::Address.country_code,
+            state: Faker::Address.state,
+            city: Faker::Address.city,
+            borough: Faker::Lorem.word,
+            street: Faker::Address.street_name,
+            number: Faker::Address.building_number,
+            postal_code: Faker::Address.zip_code
           }
         end
 
