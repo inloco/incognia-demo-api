@@ -104,4 +104,87 @@ RSpec.describe "Sessions", type: :request do
       end
     end
   end
+
+  describe "POST /validate_otp" do
+    subject(:dispatch_request) { post "/signin/validate_otp", params: }
+    let(:params) { { account_id: user.account_id, code: } }
+    let(:code) { signin_code.code }
+    let(:user) { signin_code.user }
+    let(:signin_code) { create(:signin_code) }
+
+    context 'when validations succeed' do
+      before do
+        allow(Signin::OtpForm).to receive(:new).with(user:, code:)
+          .and_return(form)
+      end
+      let(:form) { instance_double(Signin::OtpForm, errors: []) }
+
+      context 'and the form returns the logged in user' do
+        before { allow(form).to receive(:submit).and_return(user) }
+
+        it "invokes otp signin form" do
+          allow(Signin::OtpForm).to receive(:new).with(user:, code:)
+            .and_return(form)
+
+          expect(form).to receive(:submit)
+
+          dispatch_request
+        end
+
+        it "returns http success" do
+          dispatch_request
+
+          expect(response).to have_http_status(:success)
+        end
+
+        it "returns logged in session as JSON" do
+          dispatch_request
+
+          expect(response.body).to eq(SessionSerializer.new(user:).to_json)
+        end
+      end
+
+      context 'but the form returns nil' do
+        before { allow(form).to receive(:submit).and_return(nil) }
+
+        it "returns http unauthorized" do
+          dispatch_request
+
+          expect(response).to have_http_status(:unauthorized)
+        end
+      end
+    end
+
+    context 'when validations fails' do
+      before do
+        allow_any_instance_of(Signin::OtpForm).to receive(:submit)
+          .and_return(nil)
+
+        allow_any_instance_of(Signin::OtpForm).to receive(:errors)
+          .and_return(form_errors)
+      end
+      let(:form_errors) do
+        Signin::OtpForm
+          .new
+          .errors
+          .tap { |e| e.add(attribute, message) }
+      end
+      let(:attribute) { :user }
+      let(:message) { 'cant be blank' }
+
+      it "returns http unprocessable entity" do
+        dispatch_request
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "returns detailed errors" do
+        dispatch_request
+
+        parsed_body = JSON.parse(response.body).deep_symbolize_keys
+        expect(parsed_body).to have_key(:errors)
+        expect(parsed_body.dig(:errors, attribute)).to include(message)
+      end
+    end
+  end
 end

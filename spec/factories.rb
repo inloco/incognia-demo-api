@@ -18,7 +18,8 @@ FactoryBot.define do
   end
 
   factory :signin_code do
+    user
     code { SecureRandom.base64(20) }
-    expires_at { 2.minutes_from_now }
+    expires_at { 2.minutes.from_now }
   end
 end
