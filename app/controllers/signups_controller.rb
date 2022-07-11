@@ -4,9 +4,9 @@ class SignupsController < ApplicationController
   rescue_from Incognia::APIError, with: :handle_api_errors
 
   def create
-    address = params
-      .fetch(:structured_address, {})
-      .permit(
+    signup_params = params.permit(
+      :account_id, :email,
+      structured_address: [
         :country_name,
         :country_code,
         :state,
@@ -15,16 +15,21 @@ class SignupsController < ApplicationController
         :street,
         :number,
         :postal_code
-    ).to_h.deep_symbolize_keys
+      ]
+    ).to_hash.delete_if { |k, v| v.empty? }
 
-    signup_params = {
-      installation_id: request.headers[INCOGNIA_INSTALLATION_ID_HEADER],
-      address: address,
-    }.delete_if { |k, v| v.empty? }
+    signup_params
+      .merge!(installation_id: request.headers[INCOGNIA_INSTALLATION_ID_HEADER])
+      .deep_symbolize_keys!
 
-    signup = Signups::Create.call(signup_params)
+    form = Signups::CreateForm.new(signup_params)
+    signup = form.submit
 
-    render json: { id: signup.incognia_signup_id }
+    if signup
+      render json: { id: signup.incognia_signup_id }
+    else
+      render json: { errors: form.errors.to_hash }, status: 422
+    end
   end
 
   def show
