@@ -2,9 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Sessions", type: :request do
   describe "POST /create" do
-    subject(:dispatch_request) do
-      post "/signin", params: params, headers: headers
-    end
+    subject(:dispatch_request) { post "/signin", params:, headers: }
     let(:params) { { account_id: user.account_id } }
     let(:user) { create(:user) }
     let(:headers) do
@@ -19,7 +17,7 @@ RSpec.describe "Sessions", type: :request do
     context 'when validations succeed' do
       before do
         allow(Signin::PasswordlessForm).to receive(:new)
-          .with(user: user, installation_id: installation_id)
+          .with(user:, installation_id:)
           .and_return(form)
       end
       let(:form) { instance_double(Signin::PasswordlessForm, errors: []) }
@@ -29,7 +27,7 @@ RSpec.describe "Sessions", type: :request do
 
         it "invokes passwordless signin form" do
           allow(Signin::PasswordlessForm).to receive(:new)
-            .with(user: user, installation_id: installation_id)
+            .with(user:, installation_id:)
             .and_return(form)
 
           expect(form).to receive(:submit)
@@ -46,7 +44,7 @@ RSpec.describe "Sessions", type: :request do
         it "returns registered signup as JSON" do
           dispatch_request
 
-          expect(response.body).to eq(SessionSerializer.new(user: user).to_json)
+          expect(response.body).to eq(SessionSerializer.new(user:).to_json)
         end
       end
 

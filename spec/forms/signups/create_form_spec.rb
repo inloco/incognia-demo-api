@@ -13,27 +13,21 @@ RSpec.describe Signups::CreateForm, type: :model do
     subject(:submit) { described_class.new(params).submit }
 
     context 'when attributes are valid' do
-      let(:params) do
-        {
-          account_id: account_id,
-          email: email,
-          installation_id: installation_id,
-        }
-      end
+      let(:params) { { account_id:, email:, installation_id: } }
       let(:account_id) { SecureRandom.uuid }
       let(:email) { Faker::Internet.email }
       let(:installation_id) { SecureRandom.uuid }
 
       before do
         allow(IncogniaApi.instance).to receive(:register_signup)
-          .with(hash_including(installation_id: installation_id))
+          .with(hash_including(installation_id:))
           .and_return(signup_assessment)
       end
       let(:signup_assessment) { OpenStruct.new(id: SecureRandom.uuid) }
 
       it 'requests Incognia with installation_id' do
         expect(IncogniaApi.instance).to receive(:register_signup)
-          .with(installation_id: installation_id)
+          .with(installation_id:)
           .and_return(signup_assessment)
 
         submit

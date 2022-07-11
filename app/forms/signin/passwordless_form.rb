@@ -12,7 +12,7 @@ module Signin
 
       assessment = IncogniaApi.instance.register_login(
         account_id: user.account_id,
-        installation_id: installation_id,
+        installation_id:,
       )
 
       return user if assessment.risk_assessment.to_sym == :low_risk

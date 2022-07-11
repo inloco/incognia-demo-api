@@ -2,7 +2,7 @@ class SessionsController < ApplicationController
   def create
     account_id = params.fetch(:account_id)
 
-    user = User.find_by!(account_id: account_id)
+    user = User.find_by!(account_id:)
 
     form = Signin::PasswordlessForm.new(
       user: user,
@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
     user = form.submit
 
     if user
-      render json: SessionSerializer.new(user: user).to_json
+      render json: SessionSerializer.new(user:).to_json
     elsif form.errors.any?
       render json: { errors: form.errors.to_hash }, status: :unprocessable_entity
     else

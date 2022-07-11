@@ -13,26 +13,21 @@ RSpec.describe Signin::PasswordlessForm, type: :model do
     subject(:submit) { form.submit }
 
     context 'when attributes are valid' do
-      let(:attrs) do
-        {
-          user: user,
-          installation_id: installation_id,
-        }
-      end
+      let(:attrs) { { user:, installation_id: } }
       let(:user) { build(:user) }
       let(:installation_id) { SecureRandom.uuid }
 
       before do
         allow(IncogniaApi.instance).to receive(:register_login)
-          .with(account_id: user.account_id, installation_id: installation_id)
+          .with(account_id: user.account_id, installation_id:)
           .and_return(login_assessment)
       end
-      let(:login_assessment) { OpenStruct.new(risk_assessment: risk_assessment) }
+      let(:login_assessment) { OpenStruct.new(risk_assessment:) }
       let(:risk_assessment) { [:low_risk, :unknown_risk, :high_risk].sample }
 
       it 'requests Incognia with account_id and installation_id' do
         expect(IncogniaApi.instance).to receive(:register_login)
-          .with(account_id: user.account_id, installation_id: installation_id)
+          .with(account_id: user.account_id, installation_id:)
           .and_return(login_assessment)
 
         submit

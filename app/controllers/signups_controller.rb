@@ -22,7 +22,7 @@ class SignupsController < ApplicationController
     user = form.submit
 
     if user
-      render json: SignupSerializer.new(user: user).to_json
+      render json: SignupSerializer.new(user:).to_json
     else
       render json: { errors: form.errors.to_hash }, status: 422
     end
@@ -31,6 +31,6 @@ class SignupsController < ApplicationController
   def show
     user = Signups::GetReassessment.call(incognia_signup_id: params[:id])
 
-    render json: SignupSerializer.new(user: user).to_json
+    render json: SignupSerializer.new(user:).to_json
   end
 end
