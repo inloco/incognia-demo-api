@@ -1,19 +1,43 @@
 require 'rails_helper'
 
 RSpec.describe Signups::CreateForm, type: :model do
+  subject(:form) { described_class.new(attrs) }
+  let(:attrs) { {} }
+
   context 'validations' do
     it { should validate_presence_of(:account_id) }
     it { should validate_presence_of(:email) }
     it { should validate_presence_of(:installation_id) }
     it { should allow_value(Faker::Internet.email).for(:email) }
     it { should_not allow_value('random@').for(:email) }
+
+    describe 'email uniqueness' do
+      let(:attrs) do
+        {
+          account_id: SecureRandom.uuid,
+          email: email,
+          installation_id: SecureRandom.uuid,
+        }
+      end
+
+      context 'when user with same email already exists' do
+        let(:email) { existent_user.email }
+        let(:existent_user) { create(:user) }
+
+        it 'is expected to validate that :email is unique' do
+          expect(form).to be_invalid
+          expect(form.errors).to have_key(:email)
+          expect(form.errors[:email]).to include(I18n.t('errors.messages.taken'))
+        end
+      end
+    end
   end
 
   describe '#submit' do
-    subject(:submit) { described_class.new(params).submit }
+    subject(:submit) { form.submit }
 
     context 'when attributes are valid' do
-      let(:params) do
+      let(:attrs) do
         {
           account_id: account_id,
           email: email,
@@ -55,7 +79,7 @@ RSpec.describe Signups::CreateForm, type: :model do
       end
 
       context 'when address is informed' do
-        before { params.merge!(structured_address: address) }
+        before { attrs.merge!(structured_address: address) }
         let(:address) do
           {
             country_name: Faker::Address.country,
@@ -102,10 +126,28 @@ RSpec.describe Signups::CreateForm, type: :model do
           expect { submit }.to raise_error(Incognia::APIError)
         end
       end
+
+      context 'when race condition occurs' do
+        before do
+          allow(User).to receive(:create!)
+            .and_raise(ActiveRecord::RecordNotUnique)
+        end
+
+        it 'returns falsy' do
+          expect(submit).to be_falsy
+        end
+
+        it 'is expected to validate that :email is unique' do
+          submit
+
+          expect(form.errors).to have_key(:email)
+          expect(form.errors[:email]).to include(I18n.t('errors.messages.taken'))
+        end
+      end
     end
 
     context 'when attributes are invalid' do
-      let(:params) { {} }
+      let(:attrs) { {} }
 
       it 'does not request Incognia' do
         expect(IncogniaApi.instance).to_not receive(:register_signup)

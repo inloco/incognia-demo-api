@@ -1,5 +1,7 @@
 FactoryBot.define do
   factory :user do
+    account_id { SecureRandom.uuid }
+    email { Faker::Internet.email }
     address do
       {
         structured_address:{
