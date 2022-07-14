@@ -43,14 +43,14 @@ RSpec.describe Signups::CreateForm, type: :model do
       let(:installation_id) { SecureRandom.uuid }
 
       before do
-        allow(IncogniaApi.instance).to receive(:register_signup)
+        allow_any_instance_of(IncogniaApi::Adapter).to receive(:register_signup)
           .with(hash_including(installation_id:))
           .and_return(signup_assessment)
       end
       let(:signup_assessment) { OpenStruct.new(id: SecureRandom.uuid) }
 
       it 'requests Incognia with installation_id' do
-        expect(IncogniaApi.instance).to receive(:register_signup)
+        allow_any_instance_of(IncogniaApi::Adapter).to receive(:register_signup)
           .with(installation_id:)
           .and_return(signup_assessment)
 
@@ -101,10 +101,12 @@ RSpec.describe Signups::CreateForm, type: :model do
         end
 
         it 'requests Incognia w/ installation_id and address w/ default locale' do
-          allow(IncogniaApi.instance).to receive(:register_signup) do |args|
-            expect(args[:installation_id]).to eq(installation_id)
-            expect(args[:address].to_hash).to eq(enriched_address.to_hash)
-          end.and_return(signup_assessment)
+          allow_any_instance_of(IncogniaApi::Adapter)
+            .to receive(:register_signup) do |_, args|
+
+              expect(args[:installation_id]).to eq(installation_id)
+              expect(args[:address].to_hash).to eq(enriched_address.to_hash)
+            end.and_return(signup_assessment)
 
           submit
         end
@@ -112,7 +114,8 @@ RSpec.describe Signups::CreateForm, type: :model do
 
       context 'when Incognia raises an error' do
         before do
-          allow(IncogniaApi.instance).to receive(:register_signup)
+          allow_any_instance_of(IncogniaApi::Adapter)
+            .to receive(:register_signup)
             .and_raise(Incognia::APIError, '')
         end
 
@@ -144,7 +147,8 @@ RSpec.describe Signups::CreateForm, type: :model do
       let(:attrs) { {} }
 
       it 'does not request Incognia' do
-        expect(IncogniaApi.instance).to_not receive(:register_signup)
+        expect_any_instance_of(IncogniaApi::Adapter)
+          .to_not receive(:register_signup)
 
         submit
       end

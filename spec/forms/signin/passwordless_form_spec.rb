@@ -18,7 +18,7 @@ RSpec.describe Signin::PasswordlessForm, type: :model do
       let(:installation_id) { SecureRandom.uuid }
 
       before do
-        allow(IncogniaApi.instance).to receive(:register_login)
+        allow_any_instance_of(IncogniaApi::Adapter).to receive(:register_login)
           .with(account_id: user.account_id, installation_id:)
           .and_return(login_assessment)
       end
@@ -26,7 +26,7 @@ RSpec.describe Signin::PasswordlessForm, type: :model do
       let(:risk_assessment) { [:low_risk, :unknown_risk, :high_risk].sample }
 
       it 'requests Incognia with account_id and installation_id' do
-        expect(IncogniaApi.instance).to receive(:register_login)
+        allow_any_instance_of(IncogniaApi::Adapter).to receive(:register_login)
           .with(account_id: user.account_id, installation_id:)
           .and_return(login_assessment)
 
@@ -83,7 +83,7 @@ RSpec.describe Signin::PasswordlessForm, type: :model do
       let(:params) { {} }
 
       it 'does not request Incognia' do
-        expect(IncogniaApi.instance).to_not receive(:register_login)
+        expect_any_instance_of(IncogniaApi::Adapter).to_not receive(:register_login)
 
         submit
       end

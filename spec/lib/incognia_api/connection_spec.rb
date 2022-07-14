@@ -1,8 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe IncogniaApi, type: :lib do
-  subject { described_class.instance }
-
+RSpec.describe IncogniaApi::Connection, type: :lib do
   describe '.instance' do
     before do
       allow(ENV).to receive(:[]).with('INCOGNIA_CLIENT_ID').and_return(client_id)
@@ -16,16 +14,12 @@ RSpec.describe IncogniaApi, type: :lib do
     it 'initializes Incognia api library with propert env vars' do
       expect(Incognia::Api).to receive(:new).with(client_id:, client_secret:)
 
-      IncogniaApi.instance.incognia_api
+      described_class.instance.api
     end
 
-    it 'returns the same instance of IncogniaApi' do
-      expect(IncogniaApi.instance).to be_an(IncogniaApi)
-      expect(IncogniaApi.instance).to eq(IncogniaApi.instance)
+    it 'returns the same instance of Connection' do
+      expect(described_class.instance).to be_an(described_class)
+      expect(described_class.instance).to eq(described_class.instance)
     end
   end
-
-  it { should delegate_method(:register_signup).to(:incognia_api) }
-  it { should delegate_method(:get_signup_assessment).to(:incognia_api) }
-  it { should delegate_method(:register_login).to(:incognia_api) }
 end
