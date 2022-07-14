@@ -18,4 +18,9 @@ FactoryBot.define do
     end
     incognia_signup_id { SecureRandom.uuid }
   end
+
+  factory :signin_code do
+    code { SecureRandom.base64(20) }
+    expires_at { 2.minutes_from_now }
+  end
 end
