@@ -30,6 +30,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_08_092517) do
     t.datetime "updated_at", null: false
     t.string "account_id"
     t.string "email"
+    t.index ["email"], name: "index_signups_on_email", unique: true
   end
 
   add_foreign_key "signin_codes", "users"

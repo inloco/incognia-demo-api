@@ -11,7 +11,7 @@ RSpec.describe Signin::GenerateSigninCode, type: :service do
     end
     let(:code) { Faker::Alphanumeric.alphanumeric }
 
-    it 'creates a sigin code associated with the user' do
+    it 'creates a signin code associated with the user' do
       expect { generate }.to change(SigninCode, :count).by(1)
 
       generated_code = SigninCode.last
