@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :signup do
+  factory :user do
     account_id { SecureRandom.uuid }
     email { Faker::Internet.email }
     address do

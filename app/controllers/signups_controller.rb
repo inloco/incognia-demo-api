@@ -23,19 +23,19 @@ class SignupsController < ApplicationController
       .deep_symbolize_keys!
 
     form = Signups::CreateForm.new(signup_params)
-    signup = form.submit
+    user = form.submit
 
-    if signup
-      render json: SignupSerializer.new(signup: signup).to_json
+    if user
+      render json: SignupSerializer.new(user: user).to_json
     else
       render json: { errors: form.errors.to_hash }, status: 422
     end
   end
 
   def show
-    signup = Signups::GetReassessment.call(incognia_signup_id: params[:id])
+    user = Signups::GetReassessment.call(incognia_signup_id: params[:id])
 
-    render json: SignupSerializer.new(signup: signup).to_json
+    render json: SignupSerializer.new(user: user).to_json
   end
 
   private

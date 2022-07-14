@@ -20,9 +20,9 @@ RSpec.describe Signups::CreateForm, type: :model do
         }
       end
 
-      context 'when signup with same email already exists' do
-        let(:email) { existent_signup.email }
-        let(:existent_signup) { create(:signup) }
+      context 'when user with same email already exists' do
+        let(:email) { existent_user.email }
+        let(:existent_user) { create(:user) }
 
         it 'is expected to validate that :email is unique' do
           expect(form).to be_invalid
@@ -63,19 +63,19 @@ RSpec.describe Signups::CreateForm, type: :model do
         submit
       end
 
-      it "creates a signup" do
-        expect { submit }.to change(Signup, :count).by(1)
+      it "creates a user" do
+        expect { submit }.to change(User, :count).by(1)
 
-        created_signup = Signup.last
-        expect(created_signup.account_id).to eq(account_id)
-        expect(created_signup.email).to eq(email)
-        expect(created_signup.incognia_signup_id).to eq(signup_assessment.id)
+        created_user = User.last
+        expect(created_user.account_id).to eq(account_id)
+        expect(created_user.email).to eq(email)
+        expect(created_user.incognia_signup_id).to eq(signup_assessment.id)
       end
 
-      it "returns created signup" do
-        created_signup = submit
+      it "returns created user" do
+        created_user = submit
 
-        expect(created_signup).to eq(Signup.last)
+        expect(created_user).to eq(User.last)
       end
 
       context 'when address is informed' do
@@ -129,7 +129,7 @@ RSpec.describe Signups::CreateForm, type: :model do
 
       context 'when race condition occurs' do
         before do
-          allow(Signup).to receive(:create!)
+          allow(User).to receive(:create!)
             .and_raise(ActiveRecord::RecordNotUnique)
         end
 
@@ -155,8 +155,8 @@ RSpec.describe Signups::CreateForm, type: :model do
         submit
       end
 
-      it 'does not create a signup' do
-        expect { submit }.to_not change(Signup, :count)
+      it 'does not create a user' do
+        expect { submit }.to_not change(User, :count)
       end
 
       it 'returns falsy' do

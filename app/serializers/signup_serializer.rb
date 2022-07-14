@@ -1,7 +1,7 @@
 class SignupSerializer < BaseSerializer
 
-  def initialize(signup:)
-    @signup = signup
+  def initialize(user:)
+    @user = user
   end
 
   def attributes
@@ -9,10 +9,10 @@ class SignupSerializer < BaseSerializer
   end
 
   def id
-    signup.incognia_signup_id
+    user.incognia_signup_id
   end
 
   private
 
-  attr_reader :signup
+  attr_reader :user
 end

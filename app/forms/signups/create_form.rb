@@ -16,7 +16,7 @@ module Signups
 
       assessment = IncogniaApi.instance.register_signup(**incognia_signup_attrs)
 
-      Signup.create!(
+      User.create!(
         account_id: account_id,
         email: email,
         address: incognia_signup_attrs[:address]&.to_hash,
@@ -31,7 +31,7 @@ module Signups
     private
 
     def email_uniqueness
-      errors.add(:email, :taken) if Signup.exists?(email: email)
+      errors.add(:email, :taken) if User.exists?(email: email)
     end
 
     def incognia_signup_attrs
