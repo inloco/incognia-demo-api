@@ -28,7 +28,7 @@ gem "bootsnap", require: false
 # gem "rack-cors"
 
 # Incognia library
-gem "incognia_api", '~> 0.2', require: 'incognia'
+gem "incognia_api", '~> 0.3', require: 'incognia'
 
 # Ruby interface to the PostgreSQL
 gem 'pg', '~> 1.4'
@@ -38,6 +38,15 @@ group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
   gem 'rspec-rails', '~> 5.0.0'
   gem 'dotenv-rails', '~> 2.7.6'
+
+  # Fixtures replacement
+  gem 'factory_bot_rails', '~> 6.2'
+
+  # Generates fake data
+  gem 'faker', '~> 2.21'
+
+  # One-liners to test common Rails functionality
+  gem 'shoulda-matchers', '~> 5.0'
 end
 
 group :development do
