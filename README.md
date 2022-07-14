@@ -11,6 +11,10 @@ This API responds to the below endpoints:
 
 * Register signup: `POST /signups`
 * Reassess signup: `GET /signups/:id`
+* Signin: `POST /signin`
+  * This endpoint uses Incognia API to decide between frictionlessly sign in the user or sending an OTP through email.
+* Validate signin OTP: `POST /signin/validate_otp`
+
 
 ## How to run this API locally?
 
