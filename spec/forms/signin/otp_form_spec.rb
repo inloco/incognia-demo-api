@@ -56,7 +56,7 @@ RSpec.describe Signin::OtpForm, type: :model do
     subject(:submit) { form.submit }
 
     context 'when attributes are valid' do
-      it 'updates sigin code used timestamp' do
+      it 'updates signin code used timestamp' do
         expect { submit }.to change { signin_code.reload.used_at }
       end
 
@@ -68,7 +68,7 @@ RSpec.describe Signin::OtpForm, type: :model do
     context 'when attributes are invalid' do
       let(:attrs) { {} }
 
-      it 'does not update sigin code used timestamp' do
+      it 'does not update signin code used timestamp' do
         expect { submit }.to_not change { signin_code.used_at }
       end
 
