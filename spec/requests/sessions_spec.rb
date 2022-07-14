@@ -15,7 +15,6 @@ RSpec.describe "Sessions", type: :request do
     end
     let(:installation_id) { SecureRandom.hex }
 
-
     context 'when validations succeed' do
       before do
         allow(Signin::PasswordlessForm).to receive(:new)
