@@ -12,7 +12,7 @@ class SignupsController < ApplicationController
         :number,
         :postal_code
       ]
-    ).to_hash.delete_if { |k, v| v.empty? }
+    ).to_hash.delete_if { |k, v| v.blank? }
 
     signup_params
       .merge!(installation_id: request.headers[INCOGNIA_INSTALLATION_ID_HEADER])
@@ -22,7 +22,7 @@ class SignupsController < ApplicationController
     user = form.submit
 
     if user
-      render json: SignupSerializer.new(user: user).to_json
+      render json: SignupSerializer.new(user:)
     else
       render json: { errors: form.errors.to_hash }, status: 422
     end
@@ -31,6 +31,6 @@ class SignupsController < ApplicationController
   def show
     user = Signups::GetReassessment.call(incognia_signup_id: params[:id])
 
-    render json: SignupSerializer.new(user: user).to_json
+    render json: SignupSerializer.new(user:)
   end
 end

@@ -2,9 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Signups::GetReassessment, type: :service do
   describe '.call' do
-    subject(:get) do
-      described_class.call(incognia_signup_id: id)
-    end
+    subject(:get) { described_class.call(incognia_signup_id: id) }
     let(:id) { user.incognia_signup_id }
 
     let(:user) { create(:user) }

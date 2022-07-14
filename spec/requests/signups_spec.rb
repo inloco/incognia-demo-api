@@ -28,7 +28,7 @@ RSpec.describe "Signups", type: :request do
     it "returns signup as JSON" do
       dispatch_request
 
-      expect(response.body).to eq(SignupSerializer.new(user: user).to_json)
+      expect(response.body).to eq(SignupSerializer.new(user:).to_json)
     end
 
     it_behaves_like 'handle Incognia API errors' do
@@ -38,15 +38,8 @@ RSpec.describe "Signups", type: :request do
   end
 
   describe "POST /create" do
-    subject(:dispatch_request) do
-      post "/signups", params: params, headers: headers
-    end
-    let(:params) do
-      {
-        account_id: account_id,
-        email: email,
-      }
-    end
+    subject(:dispatch_request) { post "/signups", params:, headers: }
+    let(:params) { { account_id:, email: } }
     let(:account_id) { SecureRandom.uuid }
     let(:email) { Faker::Internet.email }
     let(:headers) do
@@ -61,7 +54,7 @@ RSpec.describe "Signups", type: :request do
     context 'when validations succeed' do
       before do
         allow(Signups::CreateForm).to receive(:new)
-          .with(params.merge(installation_id: installation_id))
+          .with(params.merge(installation_id:))
           .and_return(form)
 
         allow(form).to receive(:submit).and_return(user)
@@ -71,7 +64,7 @@ RSpec.describe "Signups", type: :request do
 
       it "invokes singups create form" do
         allow(Signups::CreateForm).to receive(:new)
-          .with(params.merge(installation_id: installation_id))
+          .with(params.merge(installation_id:))
           .and_return(form)
 
         expect(form).to receive(:submit)
@@ -88,7 +81,7 @@ RSpec.describe "Signups", type: :request do
       it "returns registered signup as JSON" do
         dispatch_request
 
-        expect(response.body).to eq(SignupSerializer.new(user: user).to_json)
+        expect(response.body).to eq(SignupSerializer.new(user:).to_json)
       end
 
       it_behaves_like 'handle Incognia API errors' do
@@ -101,20 +94,20 @@ RSpec.describe "Signups", type: :request do
 
         let(:address) do
           {
-            country_name:"United States of America",
-            country_code:"US",
-            state:"NY",
-            city:"New York City",
-            borough:"Manhattan",
-            street:"W 34th St.",
-            number:"20",
-            postal_code:"10001"
+            country_name: Faker::Address.country,
+            country_code: Faker::Address.country_code,
+            state: Faker::Address.state,
+            city: Faker::Address.city,
+            borough: Faker::Lorem.word,
+            street: Faker::Address.street_name,
+            number: Faker::Address.building_number,
+            postal_code: Faker::Address.zip_code
           }
         end
 
         it "invokes singups create form with address info" do
           expect(Signups::CreateForm).to receive(:new)
-            .with(params.merge(installation_id: installation_id))
+            .with(params.merge(installation_id:))
             .and_return(form)
 
           expect(form).to receive(:submit)

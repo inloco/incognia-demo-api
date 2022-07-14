@@ -8,7 +8,8 @@ module Signin
         code = SecureRandom.base64(OTP_LENGTH)
 
         SigninCode.create(
-          code: code, user: user,
+          code:,
+          user:,
           expires_at: Time.now + EXPIRATION_TIME_IN_MINUTES.minutes
         )
 

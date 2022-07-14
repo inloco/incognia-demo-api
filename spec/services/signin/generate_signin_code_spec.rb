@@ -2,9 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Signin::GenerateSigninCode, type: :service do
   describe '.call' do
-    subject(:generate) do
-      described_class.call(user: user)
-    end
+    subject(:generate) { described_class.call(user:) }
     let(:user) { create(:user) }
 
     before do

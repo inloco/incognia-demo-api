@@ -14,8 +14,7 @@ RSpec.describe IncogniaApi, type: :lib do
     let(:client_secret) { SecureRandom.uuid }
 
     it 'initializes Incognia api library with propert env vars' do
-      expect(Incognia::Api).to receive(:new)
-        .with(client_id: client_id, client_secret: client_secret)
+      expect(Incognia::Api).to receive(:new).with(client_id:, client_secret:)
 
       IncogniaApi.instance.incognia_api
     end

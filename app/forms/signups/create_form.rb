@@ -12,13 +12,13 @@ module Signups
     validate :email_uniqueness
 
     def submit
-      return unless valid?
+      return if invalid?
 
       assessment = IncogniaApi.instance.register_signup(**incognia_signup_attrs)
 
       User.create!(
-        account_id: account_id,
-        email: email,
+        account_id:,
+        email:,
         address: incognia_signup_attrs[:address]&.to_hash,
         incognia_signup_id: assessment.id
       )
@@ -37,9 +37,7 @@ module Signups
     def incognia_signup_attrs
       return @incognia_signup_attrs if @incognia_signup_attrs
 
-      @incognia_signup_attrs = {
-        installation_id: installation_id,
-      }
+      @incognia_signup_attrs = { installation_id: }
 
       if structured_address.present?
         structured_address.merge!(locale: EN_US_LOCALE) # For simplicity sake

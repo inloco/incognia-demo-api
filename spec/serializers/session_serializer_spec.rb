@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe SessionSerializer, type: :serializer do
-  subject(:serialized) { described_class.new(user: user).to_hash }
+  subject(:serialized) { described_class.new(user:).to_hash }
   let(:user) { create(:user) }
 
   it 'serializes login with its user info' do
