@@ -36,23 +36,20 @@ RSpec.describe Signups::CreateForm, type: :model do
   describe '#submit' do
     subject(:submit) { form.submit }
 
+    before { allow(IncogniaApi::Adapter).to receive(:new).and_return(adapter) }
+    let(:adapter) do
+      instance_double(IncogniaApi::Adapter, register_signup: signup_assessment)
+    end
+    let(:signup_assessment) { OpenStruct.new(id: SecureRandom.uuid) }
+
     context 'when attributes are valid' do
       let(:attrs) { { account_id:, email:, installation_id: } }
       let(:account_id) { SecureRandom.uuid }
       let(:email) { Faker::Internet.email }
       let(:installation_id) { SecureRandom.uuid }
 
-      before do
-        allow_any_instance_of(IncogniaApi::Adapter).to receive(:register_signup)
-          .with(hash_including(installation_id:))
-          .and_return(signup_assessment)
-      end
-      let(:signup_assessment) { OpenStruct.new(id: SecureRandom.uuid) }
-
       it 'requests Incognia with installation_id' do
-        allow_any_instance_of(IncogniaApi::Adapter).to receive(:register_signup)
-          .with(installation_id:)
-          .and_return(signup_assessment)
+        expect(adapter).to receive(:register_signup).with(installation_id:)
 
         submit
       end
@@ -101,8 +98,7 @@ RSpec.describe Signups::CreateForm, type: :model do
         end
 
         it 'requests Incognia w/ installation_id and address w/ default locale' do
-          allow_any_instance_of(IncogniaApi::Adapter)
-            .to receive(:register_signup) do |_, args|
+          allow(adapter).to receive(:register_signup) do |args|
 
               expect(args[:installation_id]).to eq(installation_id)
               expect(args[:address].to_hash).to eq(enriched_address.to_hash)
@@ -114,8 +110,7 @@ RSpec.describe Signups::CreateForm, type: :model do
 
       context 'when Incognia raises an error' do
         before do
-          allow_any_instance_of(IncogniaApi::Adapter)
-            .to receive(:register_signup)
+          allow(adapter).to receive(:register_signup)
             .and_raise(Incognia::APIError, '')
         end
 
@@ -147,8 +142,7 @@ RSpec.describe Signups::CreateForm, type: :model do
       let(:attrs) { {} }
 
       it 'does not request Incognia' do
-        expect_any_instance_of(IncogniaApi::Adapter)
-          .to_not receive(:register_signup)
+        expect(adapter).to_not receive(:register_signup)
 
         submit
       end
