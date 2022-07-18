@@ -1,0 +1,22 @@
+<div data-controller="signin" data-signin-code="<%= code %>">
+  <!-- Card -->
+  <div class="card">
+    <h2>Two-Factor Authentication</h2>
+    <p>Scan this QR in the Incognia App to sign in:</p>
+    <div class="w-200">
+      <%= raw qrcode.html_safe %>
+    </div>
+
+    <!-- Wrapping the button to act as a link -->
+    <%= link_to new_web_session_path do %>
+      <button type="button" class="subtle">Cancel</button>
+    <% end %>
+  </div>
+  <!-- Download -->
+  <div class="download-section">
+    <p>Download the <b>Incognia App</b> on the App Store:</p>
+    <a href="/" target="_blank" rel="no_referrer">
+      <%= image_tag 'appstore.png', alt: 'Download on the App Store', class: 'w-128' %>
+    </a>
+  </div>
+</div>
