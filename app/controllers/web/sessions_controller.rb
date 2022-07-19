@@ -1,6 +1,6 @@
 class Web::SessionsController < Web::ApplicationController
   skip_before_action :verify_authenticity_token, only: :validate_otp
-  before_action :redirect_if_logged_in
+  before_action :redirect_if_logged_in, except: :destroy
 
   def new
     @form = Signin::MobileTokenForm.new
@@ -25,6 +25,12 @@ class Web::SessionsController < Web::ApplicationController
         format.html { render :new, status: :unprocessable_entity }
       end
     end
+  end
+
+  def destroy
+    reset_session
+
+    redirect_to web_root_path
   end
 
   def validate_otp
