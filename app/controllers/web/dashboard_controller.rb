@@ -1,4 +1,6 @@
 class Web::DashboardController < Web::ApplicationController
+  layout 'signed_in_application'
+
   before_action :verify_authorization
 
   def show

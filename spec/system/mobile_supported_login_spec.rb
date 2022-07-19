@@ -20,7 +20,6 @@ RSpec.describe "Mobile Supported Login", type: :system do
       let(:signin_code) { SigninCode.find_by(user: user) }
 
       it 'signs in the user at browser' do
-
         # Waits QR code to appear
         find 'svg'
 
@@ -32,6 +31,7 @@ RSpec.describe "Mobile Supported Login", type: :system do
         end
 
         expect(page).to have_selector('.dashboard')
+        expect(page).to have_text(user.email)
       end
     end
   end
