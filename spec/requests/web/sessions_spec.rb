@@ -1,6 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe "Web::Sessions", type: :request do
+  shared_examples_for 'not logged in action' do
+    context 'when there is a current user' do
+      include_context 'current user'
+
+      it 'redirects to web root' do
+        dispatch_request
+
+        expect(response).to redirect_to(web_root_path)
+      end
+    end
+  end
+
   describe "GET /new" do
     let(:dispatch_request) { get '/web/sessions/new' }
 
@@ -17,6 +29,8 @@ RSpec.describe "Web::Sessions", type: :request do
       expect(response.body).to include('Sign in')
       expect(response.body).to include('form')
     end
+
+    it_behaves_like 'not logged in action'
   end
 
   describe "POST /create" do
@@ -52,6 +66,8 @@ RSpec.describe "Web::Sessions", type: :request do
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
+
+    it_behaves_like 'not logged in action'
   end
 
   describe "POST /validate_otp" do

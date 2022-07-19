@@ -4,6 +4,9 @@ Rails.application.routes.draw do
     namespace :sessions do
       post :validate_otp
     end
+    get :dashboard, to: 'dashboard#show'
+
+    root 'dashboard#show'
   end
   resources :signups, only: [:create, :show]
 

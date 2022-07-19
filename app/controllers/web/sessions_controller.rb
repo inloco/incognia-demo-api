@@ -1,5 +1,7 @@
 class Web::SessionsController < Web::ApplicationController
   skip_before_action :verify_authenticity_token, only: :validate_otp
+  before_action :redirect_if_logged_in
+
   def new
     @form = Signin::MobileTokenForm.new
   end
@@ -45,5 +47,11 @@ class Web::SessionsController < Web::ApplicationController
     else
       head :unauthorized
     end
+  end
+
+  private
+
+  def redirect_if_logged_in
+    redirect_to web_root_path if current_user
   end
 end
