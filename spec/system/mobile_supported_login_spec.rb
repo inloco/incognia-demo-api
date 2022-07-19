@@ -43,7 +43,7 @@ RSpec.describe "Mobile Supported Login", type: :system do
       fill_in 'Email', with: Faker::Internet.email
       click_button 'Sign in'
 
-      expect(page).to have_text('is invalid')
+      expect(page).to have_text('Is invalid')
     end
   end
 end
