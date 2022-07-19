@@ -78,6 +78,7 @@ end
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
-  gem "selenium-webdriver"
-  gem "webdrivers"
+
+  # Cuprite is a pure Ruby driver for Capybara
+  gem 'cuprite', '~> 0.13'
 end
