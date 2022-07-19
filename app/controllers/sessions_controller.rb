@@ -38,4 +38,33 @@ class SessionsController < ApplicationController
       render nothing: true, status: :unauthorized
     end
   end
+
+  def validate_qrcode
+    signin_params = params
+      .permit(:account_id, :code)
+      .to_hash
+      .symbolize_keys
+
+    user = User.find_by!(account_id: signin_params.fetch(:account_id))
+    form = Signin::ValidateMobileTokenForm.new(
+      user:, code: signin_params.fetch(:code)
+    )
+    web_otp_code = form.submit
+
+    if web_otp_code
+      SigninChannel.broadcast_to(
+        form.signin_code, {
+          url: web_sessions_validate_otp_url,
+          email: user.email,
+          code: web_otp_code
+        }
+      )
+
+      render nothing: true, status: :ok
+    elsif form.errors.any?
+      render json: { errors: form.errors.to_hash }, status: :unprocessable_entity
+    else
+      render nothing: true, status: :unauthorized
+    end
+  end
 end

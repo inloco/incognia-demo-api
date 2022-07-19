@@ -186,4 +186,98 @@ RSpec.describe "Sessions", type: :request do
       end
     end
   end
+
+  describe "POST /validate_qrcode" do
+    subject(:dispatch_request) { post "/signin/validate_qrcode", params: }
+    let(:params) { { account_id: user.account_id, code: } }
+    let(:code) { signin_code.code }
+    let(:user) { signin_code.user }
+    let(:signin_code) { create(:signin_code) }
+
+    context 'when validations succeed' do
+      before do
+        allow(Signin::ValidateMobileTokenForm).to receive(:new)
+          .with(user:, code:)
+          .and_return(form)
+      end
+      let(:form) do
+        instance_double(
+          Signin::ValidateMobileTokenForm,
+          signin_code: signin_code,
+          errors: []
+        )
+      end
+
+      it "invokes validate mobile token form" do
+        expect(form).to receive(:submit)
+
+        dispatch_request
+      end
+
+      context 'and the form returns the generated web OTP code' do
+        before { allow(form).to receive(:submit).and_return(web_otp_code) }
+        let(:web_otp_code) { create(:signin_code).code }
+
+        it "broadcasts to signin channel" do
+          expect { dispatch_request }.to have_broadcasted_to(signin_code)
+            .with(
+              url: web_sessions_validate_otp_url,
+              email: user.email,
+              code: web_otp_code
+            )
+            .from_channel(SigninChannel)
+
+          dispatch_request
+        end
+
+        it "returns http success" do
+          dispatch_request
+
+          expect(response).to have_http_status(:success)
+        end
+      end
+
+      context 'but the form returns nil' do
+        before { allow(form).to receive(:submit).and_return(nil) }
+
+        it "returns http unauthorized" do
+          dispatch_request
+
+          expect(response).to have_http_status(:unauthorized)
+        end
+      end
+    end
+
+    context 'when validations fails' do
+      before do
+        allow_any_instance_of(Signin::ValidateMobileTokenForm).to receive(:submit)
+          .and_return(nil)
+
+        allow_any_instance_of(Signin::ValidateMobileTokenForm).to receive(:errors)
+          .and_return(form_errors)
+      end
+      let(:form_errors) do
+        Signin::ValidateMobileTokenForm
+          .new
+          .errors
+          .tap { |e| e.add(attribute, message) }
+      end
+      let(:attribute) { :user }
+      let(:message) { 'cant be blank' }
+
+      it "returns http unprocessable entity" do
+        dispatch_request
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "returns detailed errors" do
+        dispatch_request
+
+        parsed_body = JSON.parse(response.body).deep_symbolize_keys
+        expect(parsed_body).to have_key(:errors)
+        expect(parsed_body.dig(:errors, attribute)).to include(message)
+      end
+    end
+  end
 end

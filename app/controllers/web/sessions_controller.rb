@@ -1,4 +1,5 @@
 class Web::SessionsController < Web::ApplicationController
+  skip_before_action :verify_authenticity_token, only: :validate_otp
   def new
     @form = Signin::MobileTokenForm.new
   end
@@ -21,6 +22,28 @@ class Web::SessionsController < Web::ApplicationController
       else
         format.html { render :new, status: :unprocessable_entity }
       end
+    end
+  end
+
+  def validate_otp
+    signin_params = params
+      .permit(:email, :code)
+      .to_hash
+      .symbolize_keys
+
+    user = User.find_by!(email: signin_params.fetch(:email))
+
+    form = Signin::OtpForm.new(user:, code: signin_params.fetch(:code))
+    logged_in_user = form.submit
+
+    if logged_in_user
+      set_user_session(logged_in_user)
+
+      head :ok
+    elsif form.errors.any?
+      render json: { errors: form.errors.to_hash }, status: :unprocessable_entity
+    else
+      head :unauthorized
     end
   end
 end

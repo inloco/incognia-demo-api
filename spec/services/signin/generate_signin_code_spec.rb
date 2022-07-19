@@ -2,7 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Signin::GenerateSigninCode, type: :service do
   describe '.call' do
-    subject(:generate) { described_class.call(user:) }
+    subject(:generate) { described_class.call(**attrs) }
+    let(:attrs) { { user: } }
     let(:user) { create(:user) }
 
     before do
@@ -26,6 +27,19 @@ RSpec.describe Signin::GenerateSigninCode, type: :service do
 
     it "returns the generated code" do
       expect(generate).to eq(code)
+    end
+
+    context 'when expiration time is informed' do
+      let(:attrs) { { user:, expiration_time: } }
+      let(:expiration_time) { rand(10).minutes }
+
+      it 'creates a signin code considering it' do
+        expect { generate }.to change(SigninCode, :count).by(1)
+
+        generated_code = SigninCode.last
+        expect(generated_code.expires_at). to be_within(1.second)
+          .of(Time.now + expiration_time)
+      end
     end
   end
 end

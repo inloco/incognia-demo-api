@@ -1,7 +1,9 @@
 module Signin
-  class OtpForm
+  class ValidateMobileTokenForm
     include ActiveModel::Model
     include Signin::CodeValidations
+
+    EXPIRATION_TIME_IN_SECONDS = 10.freeze
 
     attr_accessor :user, :code
 
@@ -10,12 +12,14 @@ module Signin
     def submit
       return if invalid?
 
-      signin_code.update(used_at: Time.now)
+      ActiveRecord::Base.transaction do
+        signin_code.update(used_at: Time.now)
 
-      user
+        Signin::GenerateSigninCode.(
+          user:, expiration_time: EXPIRATION_TIME_IN_SECONDS.seconds
+        )
+      end
     end
-
-    private
 
     def signin_code
       @signin_code ||= SigninCode.find_by(user:, code:)
