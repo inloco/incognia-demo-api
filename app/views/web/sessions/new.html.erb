@@ -2,7 +2,7 @@
 <%= content_tag :div, id: dom_id(@form), class: "card" do -%>
   <h2>Sign in</h2>
   <!-- Form -->
-  <%= form_with model: @form, url: web_sessions_path, class: 'w-full' do |f| %>
+  <%= form_with model: @form, url: web_session_path, class: 'w-full' do |f| %>
     <%= f.text_field :email, placeholder: 'Email' %>
     <% if @form.errors.any? %>
       <p class="error"><%= @form.errors[:email].join(', ') %></p>

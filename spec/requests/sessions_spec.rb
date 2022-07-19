@@ -221,7 +221,7 @@ RSpec.describe "Sessions", type: :request do
         it "broadcasts to signin channel" do
           expect { dispatch_request }.to have_broadcasted_to(signin_code)
             .with(
-              url: web_sessions_validate_otp_url,
+              url: validate_otp_web_session_url,
               email: user.email,
               code: web_otp_code
             )
