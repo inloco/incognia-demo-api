@@ -274,6 +274,10 @@ button.subtle:active {
   width: 128px;
 }
 
+.mt-20 {
+  margin-top: 20px;
+}
+
 .bg-dark {
   background-color: #2e2e2e;
 }
