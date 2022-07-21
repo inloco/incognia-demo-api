@@ -46,6 +46,11 @@ en:
             code:
               already_used: "Given code was already used"
               expired: "Given code expired"
+        signin/validate_mobile_token_form:
+          attributes:
+            code:
+              already_used: "Given code was already used"
+              expired: "Given code expired"
   date:
     abbr_day_names:
     - Sun
@@ -149,7 +154,7 @@ en:
     format: "%{attribute} %{message}"
     messages:
       accepted: must be accepted
-      blank: can't be blank
+      blank: Required field
       confirmation: doesn't match %{attribute}
       empty: can't be empty
       equal_to: must be equal to %{count}
@@ -158,7 +163,7 @@ en:
       greater_than: must be greater than %{count}
       greater_than_or_equal_to: must be greater than or equal to %{count}
       inclusion: is not included in the list
-      invalid: is invalid
+      invalid: Is invalid
       less_than: must be less than %{count}
       less_than_or_equal_to: must be less than or equal to %{count}
       model_invalid: 'Validation failed: %{errors}'

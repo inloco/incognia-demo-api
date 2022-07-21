@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "#{dom_id(@form)}" do %>
+  <%= render 'mfa', qrcode: @qrcode, code: @code %>
+<% end %>

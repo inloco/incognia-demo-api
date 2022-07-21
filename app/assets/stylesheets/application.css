@@ -1,0 +1,283 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+
+:root {
+  --green: #1aca93;
+  --green-dark: #17b584;
+  --green-darker: #14a175;
+  --gray-50: #fafbfc;
+  --gray-200: #eef0ef;
+  --gray-400: #d7d9d8;
+  --gray-800: #616362;
+  --robin-blue-500: #0098a3;
+  --robin-blue-600: #007a85;
+  --robin-blue-700: #006771;
+  --magenta-600: #c92c46;
+}
+
+/* Reset the default margins and paddings */
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* Default elements */
+
+body {
+  font-family: neue-haas-grotesk-text, sans-serif;
+  color: var(--gray-800);
+  background-color: var(--gray-50);
+  width: 100%;
+  overflow-x: hidden;
+}
+
+h2 {
+  font-size: 1.1em;
+  font-weight: 500;
+}
+
+p {
+  font-size: 0.9em;
+}
+
+p.error {
+  text-align: left;
+  font-size: small;
+  color: var(--magenta-600);
+}
+
+input[type="text"] {
+  width: 100%;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px 20px;
+  color: var(--gray-800);
+  font-size: 14px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus {
+  outline: none !important;
+  border: 1px solid var(--gray-400);
+  box-shadow: 0 0 5px var(--gray-400);
+}
+
+input[type="text"].error {
+  border-color: var(--magenta-600);
+}
+
+a {
+  display: block;
+  text-decoration: none;
+}
+a i {
+  margin-right: 5px;
+}
+a:hover {
+  text-decoration: none;
+}
+
+/* Classes */
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  width: 100%;
+  padding: 24px;
+  border-bottom: 1px solid var(--gray-400);
+}
+
+.topbar .user {
+  position: absolute;
+  right: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topbar .user > img {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+  padding: 24px;
+}
+
+.card {
+  background-color: white;
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  width: 400px;
+}
+
+.download-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 24px;
+  font-weight: lighter;
+  font-size: small;
+}
+
+/* Image */
+
+img.dashboard {
+  max-width: min(100vw - 48px, 700px);
+  margin-top: 10px;
+}
+
+/* Button */
+
+button.primary {
+  background-color: var(--green);
+  color: white;
+  padding: 12px 24px;
+  border: 0px;
+  border-radius: 24px;
+  font-size: 14px;
+  width: fit-content;
+}
+
+button.primary:hover,
+button.primary:focus {
+  background-color: var(--green-dark);
+  cursor: pointer;
+}
+
+button.primary:active {
+  background-color: var(--green-darker);
+}
+
+button.subtle {
+  background-color: transparent;
+  border: none;
+  min-width: none;
+  padding: 0;
+  color: var(--robin-blue-500);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+button.subtle:hover,
+button.subtle:focus {
+  color: var(--robin-blue-600);
+  cursor: pointer;
+}
+
+button.subtle:active {
+  color: var(--robin-blue-700);
+}
+
+/* Dropdown Menu */
+
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0px;
+  margin-top: 8px;
+}
+
+.dropdown.active {
+  display: block;
+}
+
+.menu-arrows {
+  cursor: pointer;
+}
+
+.menu-arrows .material-icons.hide {
+  display: none;
+}
+
+.menu {
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  flex-direction: column;
+  background-color: white;
+  -webkit-box-shadow: 0 1px 2px 0 rgb(34 36 38 / 15%);
+  box-shadow: 0 1px 2px 0 rgb(34 36 38 / 15%);
+}
+
+.menu:first-child {
+  margin-top: 0;
+}
+
+.menu .item {
+  display: flex;
+  align-items: center;
+  position: relative;
+  user-select: none;
+  padding: 14px;
+  font-size: 15px;
+  color: var(--gray-800);
+  text-decoration: none;
+  background-color: white;
+  border-top: none;
+  border-right: none;
+  border-radius: 10px;
+}
+
+/* Utility classes (Tailwind style) */
+
+.w-full {
+  width: 100%;
+}
+
+.w-200 {
+  width: 200px;
+}
+
+.w-128 {
+  width: 128px;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.bg-dark {
+  background-color: #2e2e2e;
+}
