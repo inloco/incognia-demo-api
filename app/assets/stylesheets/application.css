@@ -25,6 +25,7 @@
   --robin-blue-500: #0098a3;
   --robin-blue-600: #007a85;
   --robin-blue-700: #006771;
+  --magenta-600: #c92c46;
 }
 
 /* Reset the default margins and paddings */
@@ -53,6 +54,12 @@ p {
   font-size: 0.9em;
 }
 
+p.error {
+  text-align: left;
+  font-size: small;
+  color: var(--magenta-600);
+}
+
 input[type="text"] {
   width: 100%;
   margin: 8px 0;
@@ -71,6 +78,21 @@ input[type="text"]:focus {
   outline: none !important;
   border: 1px solid var(--gray-400);
   box-shadow: 0 0 5px var(--gray-400);
+}
+
+input[type="text"].error {
+  border-color: var(--magenta-600);
+}
+
+a {
+  display: block;
+  text-decoration: none;
+}
+a i {
+  margin-right: 5px;
+}
+a:hover {
+  text-decoration: none;
 }
 
 /* Classes */

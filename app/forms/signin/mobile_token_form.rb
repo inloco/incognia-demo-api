@@ -5,7 +5,7 @@ module Signin
     attr_accessor :email
 
     validates :email, presence: true
-    validate :user_existence, if: :email
+    validate :user_existence, if: -> { email.present? }
 
     def submit
       return if invalid?

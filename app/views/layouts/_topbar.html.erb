@@ -1,0 +1,10 @@
+<!-- Topbar -->
+<div class="topbar">
+  <%= image_tag 'banko.png', alt: 'Banko logo' %>
+  <% if current_user %>
+    <div class="user">
+      <p><%= current_user.email %></p>
+      <i class="material-icons">keyboard_arrow_down</i>
+    </div>
+  <% end %>
+</div>
