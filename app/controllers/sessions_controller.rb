@@ -54,7 +54,7 @@ class SessionsController < ApplicationController
     if web_otp_code
       SigninChannel.broadcast_to(
         form.signin_code, {
-          url: web_sessions_validate_otp_url,
+          url: validate_otp_web_session_url,
           email: user.email,
           code: web_otp_code
         }

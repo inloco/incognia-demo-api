@@ -14,7 +14,7 @@ RSpec.describe "Web::Sessions", type: :request do
   end
 
   describe "GET /new" do
-    let(:dispatch_request) { get '/web/sessions/new' }
+    let(:dispatch_request) { get '/web/session/new' }
 
     it "returns http success" do
       dispatch_request
@@ -35,7 +35,7 @@ RSpec.describe "Web::Sessions", type: :request do
 
   describe "POST /create" do
     let(:dispatch_request) do
-      post '/web/sessions', xhr: true, params: {
+      post '/web/session', xhr: true, params: {
         signin_mobile_token_form: form_params
       }
     end
@@ -71,7 +71,7 @@ RSpec.describe "Web::Sessions", type: :request do
   end
 
   describe "POST /validate_otp" do
-    subject(:dispatch_request) { post "/web/sessions/validate_otp", params: }
+    subject(:dispatch_request) { post "/web/session/validate_otp", params: }
     let(:params) { { email: user.email, code: } }
     let(:code) { signin_code.code }
     let(:user) { signin_code.user }
@@ -148,6 +148,22 @@ RSpec.describe "Web::Sessions", type: :request do
         expect(parsed_body).to have_key(:errors)
         expect(parsed_body.dig(:errors, attribute)).to include(message)
       end
+    end
+  end
+
+  describe "DELETE /destroy" do
+    subject(:dispatch_request) { delete "/web/session" }
+
+    it 'reset user session' do
+      expect_any_instance_of(Web::SessionsController).to receive(:reset_session)
+
+      dispatch_request
+    end
+
+    it 'redirects to root' do
+      dispatch_request
+
+      expect(response).to redirect_to(web_root_path)
     end
   end
 end

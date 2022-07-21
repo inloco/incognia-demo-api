@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   namespace :web do
-    resources :sessions, only: [:new, :create]
-    namespace :sessions do
+    resource :session, only: [:new, :create, :destroy] do
       post :validate_otp
     end
     get :dashboard, to: 'dashboard#show'

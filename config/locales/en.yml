@@ -46,6 +46,11 @@ en:
             code:
               already_used: "Given code was already used"
               expired: "Given code expired"
+        signin/validate_mobile_token_form:
+          attributes:
+            code:
+              already_used: "Given code was already used"
+              expired: "Given code expired"
   date:
     abbr_day_names:
     - Sun
