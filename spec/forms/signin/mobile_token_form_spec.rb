@@ -9,7 +9,7 @@ RSpec.describe Signin::MobileTokenForm, type: :model do
     it { should validate_presence_of(:email) }
 
     describe 'user existence' do
-      before { attrs.merge!(email: Faker::Internet.email) }
+      let(:attrs) { { email: Faker::Internet.email } }
 
       it 'is expected to validate that :email is invalid' do
         expect(form).to be_invalid

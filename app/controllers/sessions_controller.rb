@@ -20,14 +20,13 @@ class SessionsController < ApplicationController
   end
 
   def validate_otp
-    signin_params = params
+    account_id, code = params
       .permit(:account_id, :code)
-      .to_hash
-      .symbolize_keys
+      .values_at(:account_id, :code)
 
-    user = User.find_by!(account_id: signin_params.fetch(:account_id))
+    user = User.find_by!(account_id:)
 
-    form = Signin::OtpForm.new(user:, code: signin_params.fetch(:code))
+    form = Signin::OtpForm.new(user:, code:)
     logged_in_user = form.submit
 
     if logged_in_user
@@ -40,15 +39,12 @@ class SessionsController < ApplicationController
   end
 
   def validate_qrcode
-    signin_params = params
+    account_id, code = params
       .permit(:account_id, :code)
-      .to_hash
-      .symbolize_keys
+      .values_at(:account_id, :code)
 
-    user = User.find_by!(account_id: signin_params.fetch(:account_id))
-    form = Signin::ValidateMobileTokenForm.new(
-      user:, code: signin_params.fetch(:code)
-    )
+    user = User.find_by!(account_id:)
+    form = Signin::ValidateMobileTokenForm.new(user:, code:)
     web_otp_code = form.submit
 
     if web_otp_code
