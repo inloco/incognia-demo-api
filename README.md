@@ -1,9 +1,12 @@
-# Incognia Demo API
+# Incognia Demo API and Web App
 
 [![Ruby](https://github.com/inloco/incognia-demo-api/actions/workflows/ci.yml/badge.svg)](https://github.com/inloco/incognia-demo-api/actions/workflows/ci.yml)
 
-This is a sample API that uses [Incognia Ruby library](https://github.com/inloco/incognia-ruby) to easily integrate to Incognia API.
-At this repository you can better understand how can you place Incognia inside your server.
+This is a sample API and Web app that uses [Incognia Ruby library](https://github.com/inloco/incognia-ruby) to easily integrate to Incognia API.
+At this repository you can better understand:
+
+* How you can place Incognia inside your server
+* How you can leverage Incognia solution to implement Web authentication supported by a mobile device
 
 ## Available endpoints
 
@@ -14,7 +17,12 @@ This API responds to the below endpoints:
 * Signin: `POST /signin`
   * This endpoint uses Incognia API to decide between frictionlessly sign in the user or sending an OTP through email.
 * Validate signin OTP: `POST /signin/validate_otp`
+* Validate signin QR code (mobile supported Web login): `POST /signin/validate_qrcode`
 
+The Web App has below pages:
+
+* Login: `/web/session/new`
+* Dashboard (signed section): `/web/dashboard`
 
 ## How to run this API locally?
 
