@@ -37,7 +37,7 @@ RSpec.describe Signin::GenerateSigninCode, type: :service do
         expect { generate }.to change(SigninCode, :count).by(1)
 
         generated_code = SigninCode.last
-        expect(generated_code.expires_at). to be_within(1.second)
+        expect(generated_code.expires_at).to be_within(1.second)
           .of(Time.now + expiration_time)
       end
     end

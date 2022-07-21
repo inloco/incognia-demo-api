@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Signin::ValidateMobileTokenForm, type: :model do
   subject(:form) { described_class.new(attrs) }
-  let(:attrs) { { user: user, code: signin_code.code } }
+  let(:attrs) { { user:, code: signin_code.code } }
   let(:user) { create(:user) }
   let(:signin_code) { create(:signin_code, user:) }
 
@@ -45,7 +45,7 @@ RSpec.describe Signin::ValidateMobileTokenForm, type: :model do
             .and_raise(ActiveRecord::ConnectionTimeoutError)
         end
 
-        it 'leaves the sigin code unused' do
+        it 'leaves the signin code unused' do
           begin
           submit
           rescue ActiveRecord::ConnectionTimeoutError
