@@ -4,14 +4,12 @@ module Signin
     EXPIRATION_TIME_IN_MINUTES = 5.freeze
 
     class << self
-      def call(user:)
+      def call(user:, expiration_time: nil)
         code = SecureRandom.base64(OTP_LENGTH)
+        expires_at = Time.now +
+          (expiration_time || EXPIRATION_TIME_IN_MINUTES.minutes)
 
-        SigninCode.create(
-          code:,
-          user:,
-          expires_at: Time.now + EXPIRATION_TIME_IN_MINUTES.minutes
-        )
+        SigninCode.create(code:, user:, expires_at:)
 
         code
       end
