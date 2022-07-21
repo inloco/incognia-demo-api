@@ -14,7 +14,7 @@ module Signups
     def submit
       return if invalid?
 
-      assessment = IncogniaApi.instance.register_signup(**incognia_signup_attrs)
+      assessment = IncogniaApi::Adapter.new.register_signup(**incognia_signup_attrs)
 
       User.create!(
         account_id:,

@@ -9,15 +9,17 @@ RSpec.describe Signups::GetReassessment, type: :service do
     let(:signup_assessment) { OpenStruct.new(id: user.incognia_signup_id) }
 
     before do
-      allow(IncogniaApi.instance).to receive(:get_signup_assessment)
-        .with(signup_id: id)
-        .and_return(signup_assessment)
+      allow(IncogniaApi::Adapter).to receive(:new).and_return(adapter)
+    end
+    let(:adapter) do
+      instance_double(
+        IncogniaApi::Adapter,
+        get_signup_assessment: signup_assessment
+      )
     end
 
     it 'requests Incognia with incognia signup id' do
-      expect(IncogniaApi.instance).to receive(:get_signup_assessment)
-        .with(signup_id: id)
-        .and_return(signup_assessment)
+      expect(adapter).to receive(:get_signup_assessment).with(signup_id: id)
 
       get
     end
@@ -34,7 +36,7 @@ RSpec.describe Signups::GetReassessment, type: :service do
       end
 
       it 'does not request Incognia' do
-        expect(IncogniaApi.instance).to_not receive(:get_signup_assessment)
+        expect(adapter).to_not receive(:get_signup_assessment)
 
         begin
           get
@@ -45,7 +47,7 @@ RSpec.describe Signups::GetReassessment, type: :service do
 
     context 'when Incognia raises an error' do
       before do
-        allow(IncogniaApi.instance).to receive(:get_signup_assessment)
+        allow(adapter).to receive(:get_signup_assessment)
           .and_raise(Incognia::APIError, '')
       end
 

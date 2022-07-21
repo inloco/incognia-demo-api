@@ -10,7 +10,7 @@ module Signin
     def submit
       return if invalid?
 
-      assessment = IncogniaApi.instance.register_login(
+      assessment = IncogniaApi::Adapter.new.register_login(
         account_id: user.account_id,
         installation_id:,
       )
