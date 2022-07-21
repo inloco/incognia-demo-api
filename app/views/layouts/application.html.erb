@@ -1,16 +1,31 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Incognia Demo App</title>
+    <title>Banko</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "https://fonts.googleapis.com/icon?family=Material+Icons" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <%= yield %>
+    <!-- Layout -->
+    <div class="layout">
+      <!-- Topbar -->
+      <div class="topbar">
+        <%= image_tag 'banko.png', alt: 'Banko logo' %>
+        <div class="user">
+          <p>Walter White</p>
+          <i class="material-icons">keyboard_arrow_down</i>
+        </div>
+      </div>
+      <!-- Content -->
+      <div class="content">
+        <%= yield %>
+      </div>
+    </div>
   </body>
 </html>

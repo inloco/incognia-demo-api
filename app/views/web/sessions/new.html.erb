@@ -1,0 +1,11 @@
+<!-- Card -->
+<%= content_tag :div, id: dom_id(@form), class: "card" do -%>
+  <h2>Sign in</h2>
+  <!-- Form -->
+  <%= form_with model: @form, url: web_sessions_path, class: 'w-full' do |f| %>
+    <%= f.text_field :email, placeholder: 'Email' %>
+    <%= @form.errors[:email].join(',') %>
+
+    <%= f.button 'Sign in with QR Code', class: 'primary' %>
+  <% end %>
+<% end %>

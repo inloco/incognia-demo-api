@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  namespace :web do
+    resources :sessions, only: [:new, :create]
+  end
   resources :signups, only: [:create, :show]
 
   post :signin, to: 'sessions#create'
@@ -6,8 +9,5 @@ Rails.application.routes.draw do
     post :validate_otp, to: 'sessions#validate_otp'
   end
 
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
+  root to: redirect('web')
 end
