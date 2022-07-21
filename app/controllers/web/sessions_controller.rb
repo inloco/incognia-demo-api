@@ -34,14 +34,11 @@ class Web::SessionsController < Web::ApplicationController
   end
 
   def validate_otp
-    signin_params = params
-      .permit(:email, :code)
-      .to_hash
-      .symbolize_keys
+    email, code = params.permit(:email, :code).values_at(:email, :code)
 
-    user = User.find_by!(email: signin_params.fetch(:email))
+    user = User.find_by!(email:)
 
-    form = Signin::OtpForm.new(user:, code: signin_params.fetch(:code))
+    form = Signin::OtpForm.new(user:, code:)
     logged_in_user = form.submit
 
     if logged_in_user

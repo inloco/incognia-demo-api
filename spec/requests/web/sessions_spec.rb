@@ -154,7 +154,7 @@ RSpec.describe "Web::Sessions", type: :request do
   describe "DELETE /destroy" do
     subject(:dispatch_request) { delete "/web/session" }
 
-    it 'reset user session' do
+    it 'resets user session' do
       expect_any_instance_of(Web::SessionsController).to receive(:reset_session)
 
       dispatch_request
