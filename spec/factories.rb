@@ -24,4 +24,11 @@ FactoryBot.define do
     code { SecureRandom.base64(20) }
     expires_at { 2.minutes.from_now }
   end
+
+  factory :assessments_assessment, class: Assessments::Assessment do
+    api_name { Faker::Lorem.word }
+    timestamp { Time.now }
+
+    initialize_with { new(attributes) }
+  end
 end

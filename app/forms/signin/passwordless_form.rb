@@ -10,10 +10,7 @@ module Signin
     def submit
       return if invalid?
 
-      assessment = IncogniaApi::Adapter.new.register_login(
-        account_id: user.account_id,
-        installation_id:,
-      )
+      assessment = Signin::Register.call(user:, installation_id:)
 
       return user if assessment.risk_assessment.to_sym == :low_risk
 
