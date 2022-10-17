@@ -18,6 +18,7 @@ This API responds to the below endpoints:
   * This endpoint uses Incognia API to decide between frictionlessly sign in the user or sending an OTP through email.
 * Validate signin OTP: `POST /signin/validate_otp`
 * Validate signin QR code (mobile supported Web login): `POST /signin/validate_qrcode`
+* Assess user login and signup: `POST /assessments/assess`
 
 The Web App has below pages:
 

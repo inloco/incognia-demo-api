@@ -7,12 +7,19 @@ Rails.application.routes.draw do
 
     root 'dashboard#show'
   end
+
   resources :signups, only: [:create, :show]
 
   post :signin, to: 'sessions#create'
   scope :signin do
     post :validate_otp, to: 'sessions#validate_otp'
     post :validate_qrcode, to: 'sessions#validate_qrcode'
+  end
+
+  resource :assessments, only: [] do
+    member do
+      post :assess
+    end
   end
 
   root to: redirect('web')
