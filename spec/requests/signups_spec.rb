@@ -6,15 +6,12 @@ RSpec.describe "Signups", type: :request do
     let(:user) { create(:user) }
 
     before do
-      allow(Signups::GetReassessment).to receive(:call)
-        .with(incognia_signup_id: user.incognia_signup_id)
+      allow(Signups::GetReassessment).to receive(:call).with(user: user)
         .and_return(user)
     end
 
     it "invokes singups reassessment service" do
-      allow(Signups::GetReassessment).to receive(:call)
-        .with(incognia_signup_id: user.incognia_signup_id)
-        .and_return(user)
+      expect(Signups::GetReassessment).to receive(:call).with(user: user)
 
       dispatch_request
     end

@@ -29,7 +29,9 @@ class SignupsController < ApplicationController
   end
 
   def show
-    user = Signups::GetReassessment.call(incognia_signup_id: params[:id])
+    user = User.find_by!(incognia_signup_id: params[:id])
+
+    Signups::GetReassessment.call(user:)
 
     render json: SignupSerializer.new(user:)
   end
