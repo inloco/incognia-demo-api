@@ -28,7 +28,7 @@ RSpec.describe "Assessments", type: :request do
 
     context 'when validations succeed' do
       let(:submit_return) { assessments }
-      let(:assessments) { build_list(:assessments_assessment, 2) }
+      let(:assessments) { build_list(:assessment_log, 2) }
 
       it "invokes assess form" do
         expect(Assessments::AssessForm).to receive(:new)

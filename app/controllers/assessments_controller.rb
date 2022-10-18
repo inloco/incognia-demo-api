@@ -11,10 +11,10 @@ class AssessmentsController < ApplicationController
 
     if assessments
       serialized_assessments = assessments.map do |assessment|
-        AssessmentSerializer.new(assessment:)
+        AssessmentSerializer.new(assessment:).to_hash
       end
 
-      render json: assessments
+      render json: serialized_assessments
     else
       render json: { errors: form.errors.to_hash }, status: :unprocessable_entity
     end

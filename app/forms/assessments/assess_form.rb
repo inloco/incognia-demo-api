@@ -9,11 +9,10 @@ module Assessments
 
     def submit
       return unless valid?
+      Assessments::AssessSignup.(user:)
+      Assessments::AssessLogin.(user:, installation_id:)
 
-      [
-        Assessments::AssessSignup.(user:),
-        Assessments::AssessLogin.(user:, installation_id:),
-      ]
+      Assessments::GetLatestAssessmentLogs.(user:, installation_id:)
     end
   end
 end
