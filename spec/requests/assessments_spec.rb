@@ -1,9 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe "Assessments", type: :request do
-  describe "POST /assessments/assess" do
-    subject(:dispatch_request) { post "/assessments/assess", params:, headers: }
-    let(:params) { { account_id: user.account_id } }
+  describe "POST /users/:user_id/assessments/assess" do
+    subject(:dispatch_request) do
+      post "/users/#{user.account_id}/assessments/assess", headers:
+    end
     let(:user) { create(:user) }
     let(:headers) do
       {
@@ -89,9 +90,10 @@ RSpec.describe "Assessments", type: :request do
     end
   end
 
-  describe "GET /assessments/latest" do
-    subject(:dispatch_request) { get "/assessments/latest", params:, headers: }
-    let(:params) { { account_id: user.account_id } }
+  describe "GET /users/:user_id/assessments/latest" do
+    subject(:dispatch_request) do
+      get "/users/#{user.account_id}/assessments/latest", headers:
+    end
     let(:user) { create(:user) }
     let(:headers) do
       {

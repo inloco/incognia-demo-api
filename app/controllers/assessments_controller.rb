@@ -1,6 +1,6 @@
 class AssessmentsController < ApplicationController
   def assess
-    account_id = params.fetch(:account_id)
+    account_id = params.fetch(:user_id)
     user = User.find_by!(account_id:)
 
     form = Assessments::AssessForm.new(
@@ -17,7 +17,7 @@ class AssessmentsController < ApplicationController
   end
 
   def latest
-    account_id = params.fetch(:account_id)
+    account_id = params.fetch(:user_id)
     user = User.find_by!(account_id:)
     installation_id = request.headers[INCOGNIA_INSTALLATION_ID_HEADER]
 
