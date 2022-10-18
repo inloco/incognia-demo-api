@@ -36,9 +36,8 @@ RSpec.describe Signups::CreateForm, type: :model do
   describe '#submit' do
     subject(:submit) { form.submit }
 
-    before { allow(IncogniaApi::Adapter).to receive(:new).and_return(adapter) }
-    let(:adapter) do
-      instance_double(IncogniaApi::Adapter, register_signup: signup_assessment)
+    before do
+      allow(Signups::Register).to receive(:call).and_return(signup_assessment)
     end
     let(:signup_assessment) { OpenStruct.new(id: SecureRandom.uuid) }
 
@@ -48,8 +47,8 @@ RSpec.describe Signups::CreateForm, type: :model do
       let(:email) { Faker::Internet.email }
       let(:installation_id) { SecureRandom.uuid }
 
-      it 'requests Incognia with installation_id' do
-        expect(adapter).to receive(:register_signup).with(installation_id:)
+      it 'register signup with installation_id' do
+        expect(Signups::Register).to receive(:call).with(installation_id:)
 
         submit
       end
@@ -60,6 +59,7 @@ RSpec.describe Signups::CreateForm, type: :model do
         created_user = User.last
         expect(created_user.account_id).to eq(account_id)
         expect(created_user.email).to eq(email)
+        expect(created_user.address).to be_nil
         expect(created_user.incognia_signup_id).to eq(signup_assessment.id)
       end
 
@@ -84,9 +84,7 @@ RSpec.describe Signups::CreateForm, type: :model do
           }
         end
         let(:enriched_address) do
-          Incognia::Address::Structured.new(
-            **address.merge(locale: described_class::EN_US_LOCALE)
-          )
+          address.merge(locale: described_class::EN_US_LOCALE)
         end
 
         it "also stores the address along with the signup" do
@@ -94,14 +92,15 @@ RSpec.describe Signups::CreateForm, type: :model do
 
           expect(
             created_signup.address.deep_symbolize_keys
-          ).to eq(structured_address: address)
+          ).to eq(structured_address: enriched_address)
         end
 
-        it 'requests Incognia w/ installation_id and address w/ default locale' do
-          allow(adapter).to receive(:register_signup) do |args|
-
+        it 'register signup w/ installation_id and address w/ default locale' do
+          allow(Signups::Register).to receive(:call) do |args|
               expect(args[:installation_id]).to eq(installation_id)
-              expect(args[:address].to_hash).to eq(enriched_address.to_hash)
+              expect(args[:structured_address].to_hash).to eq(
+                enriched_address.to_hash
+              )
             end.and_return(signup_assessment)
 
           submit
@@ -110,7 +109,7 @@ RSpec.describe Signups::CreateForm, type: :model do
 
       context 'when Incognia raises an error' do
         before do
-          allow(adapter).to receive(:register_signup)
+          allow(Signups::Register).to receive(:call)
             .and_raise(Incognia::APIError, '')
         end
 
@@ -141,8 +140,8 @@ RSpec.describe Signups::CreateForm, type: :model do
     context 'when attributes are invalid' do
       let(:attrs) { {} }
 
-      it 'does not request Incognia' do
-        expect(adapter).to_not receive(:register_signup)
+      it 'does not register signup' do
+        expect(Signups::Register).to_not receive(:call)
 
         submit
       end
