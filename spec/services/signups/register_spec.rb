@@ -8,7 +8,12 @@ RSpec.describe Signups::Register, type: :service do
     let(:installation_id) { SecureRandom.hex }
     let(:structured_address) { nil }
 
-    let(:signup_assessment) { OpenStruct.new(id: SecureRandom.uuid) }
+    let(:signup_assessment) do
+      OpenStruct.new(
+        id: SecureRandom.uuid,
+        request_id: SecureRandom.uuid
+      )
+    end
 
     before do
       allow(IncogniaApi::Adapter).to receive(:new).and_return(adapter)
@@ -28,6 +33,16 @@ RSpec.describe Signups::Register, type: :service do
 
     it "returns the assessment" do
       expect(register).to eq(signup_assessment)
+    end
+
+    it 'logs the requested assessment' do
+      expect { register }.to change(AssessmentLog, :count).by(1)
+
+      created_log = AssessmentLog.last
+
+      expect(created_log.api_name.to_sym).to eq(Signups::Constants::API_NAME)
+      expect(created_log.incognia_id).to eq(signup_assessment.request_id)
+      expect(created_log.incognia_signup_id).to eq(signup_assessment.id)
     end
 
     context 'when address is informed' do

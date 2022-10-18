@@ -5,7 +5,12 @@ RSpec.describe Signups::GetReassessment, type: :service do
     subject(:get) { described_class.call(user:) }
     let(:user) { create(:user) }
 
-    let(:signup_assessment) { OpenStruct.new(id: user.incognia_signup_id) }
+    let(:signup_assessment) do
+      OpenStruct.new(
+        id: user.incognia_signup_id,
+        request_id: SecureRandom.uuid
+      )
+    end
 
     before do
       allow(IncogniaApi::Adapter).to receive(:new).and_return(adapter)
@@ -26,6 +31,16 @@ RSpec.describe Signups::GetReassessment, type: :service do
 
     it "returns the assessment" do
       expect(get).to eq(signup_assessment)
+    end
+
+    it 'logs the requested assessment' do
+      expect { get }.to change(AssessmentLog, :count).by(1)
+
+      created_log = AssessmentLog.last
+
+      expect(created_log.api_name.to_sym).to eq(Signups::Constants::API_NAME)
+      expect(created_log.incognia_id).to eq(signup_assessment.request_id)
+      expect(created_log.incognia_signup_id).to eq(signup_assessment.id)
     end
 
     context 'when Incognia raises an error' do

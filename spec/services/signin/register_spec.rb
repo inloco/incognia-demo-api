@@ -26,6 +26,17 @@ RSpec.describe Signin::Register, type: :service do
       expect(register).to eq(login_assessment)
     end
 
+    it 'logs the requested assessment' do
+      expect { register }.to change(AssessmentLog, :count).by(1)
+
+      created_log = AssessmentLog.last
+
+      expect(created_log.api_name.to_sym).to eq(Signin::Constants::API_NAME)
+      expect(created_log.incognia_id).to eq(login_assessment.id)
+      expect(created_log.account_id).to eq(user.account_id)
+      expect(created_log.installation_id).to eq(installation_id)
+    end
+
     context 'when Incognia raises an error' do
       before do
         allow(adapter).to receive(:register_login)

@@ -31,4 +31,11 @@ FactoryBot.define do
 
     initialize_with { new(attributes) }
   end
+
+  factory :assessment_log do
+    api_name { AssessmentLog.api_names.values.sample }
+    incognia_id { SecureRandom.uuid }
+    account_id { SecureRandom.uuid }
+    installation_id { SecureRandom.hex }
+  end
 end

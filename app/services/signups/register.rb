@@ -10,7 +10,15 @@ module Signups
           )
         end
 
-        IncogniaApi::Adapter.new.register_signup(**attrs)
+        assessment = IncogniaApi::Adapter.new.register_signup(**attrs)
+
+        AssessmentLog.create(
+          api_name: Constants::API_NAME,
+          incognia_id: assessment.request_id,
+          incognia_signup_id: assessment.id,
+        )
+
+        assessment
       end
     end
   end
