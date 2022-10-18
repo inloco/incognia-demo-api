@@ -88,4 +88,46 @@ RSpec.describe "Assessments", type: :request do
       end
     end
   end
+
+  describe "GET /assessments/latest" do
+    subject(:dispatch_request) { get "/assessments/latest", params:, headers: }
+    let(:params) { { account_id: user.account_id } }
+    let(:user) { create(:user) }
+    let(:headers) do
+      {
+        "ACCEPT" => "application/json",
+        SignupsController::INCOGNIA_INSTALLATION_ID_HEADER => installation_id
+      }
+    end
+    let(:installation_id) { SecureRandom.hex }
+
+    before do
+      allow(Assessments::GetLatestAssessmentLogs).to receive(:call)
+        .and_return(latest_assessments)
+    end
+    let(:latest_assessments) { build_list(:assessment_log, 2) }
+
+    it "returns http success" do
+      dispatch_request
+
+      expect(response).to have_http_status(:success)
+    end
+
+    it "fetches last assessments" do
+      expect(Assessments::GetLatestAssessmentLogs).to receive(:call)
+        .with(user:, installation_id:)
+
+      dispatch_request
+    end
+
+    it "returns latest assessments as JSON" do
+      dispatch_request
+
+      serializable_assessments = latest_assessments.map do |assessment|
+        AssessmentSerializer.new(assessment:)
+      end
+
+      expect(response.body).to eq(serializable_assessments.to_json)
+    end
+  end
 end

@@ -19,6 +19,7 @@ This API responds to the below endpoints:
 * Validate signin OTP: `POST /signin/validate_otp`
 * Validate signin QR code (mobile supported Web login): `POST /signin/validate_qrcode`
 * Assess user login and signup: `POST /assessments/assess`
+* Return user latest assessments: `GET /assessments/latest`
 
 The Web App has below pages:
 

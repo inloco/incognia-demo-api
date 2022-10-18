@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   resource :assessments, only: [] do
     member do
       post :assess
+      get :latest
     end
   end
 
