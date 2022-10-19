@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe AssessmentLog, type: :model do
   subject(:log) { build(:assessment_log) }
 
-  it do
+  it 'defines api_name enum correctly' do
     expected_enum = {
       onboarding: 'onboarding',
       login: 'login'

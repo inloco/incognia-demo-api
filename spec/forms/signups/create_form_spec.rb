@@ -47,13 +47,13 @@ RSpec.describe Signups::CreateForm, type: :model do
       let(:email) { Faker::Internet.email }
       let(:installation_id) { SecureRandom.uuid }
 
-      it 'register signup with installation_id' do
+      it 'registers signup with installation_id' do
         expect(Signups::Register).to receive(:call).with(installation_id:)
 
         submit
       end
 
-      it "creates a user" do
+      it 'creates a user' do
         expect { submit }.to change(User, :count).by(1)
 
         created_user = User.last
@@ -63,7 +63,7 @@ RSpec.describe Signups::CreateForm, type: :model do
         expect(created_user.incognia_signup_id).to eq(signup_assessment.id)
       end
 
-      it "returns created user" do
+      it 'returns created user' do
         created_user = submit
 
         expect(created_user).to eq(User.last)
@@ -87,7 +87,7 @@ RSpec.describe Signups::CreateForm, type: :model do
           address.merge(locale: described_class::EN_US_LOCALE)
         end
 
-        it "also stores the address along with the signup" do
+        it 'also stores the address along with the signup' do
           created_signup = submit
 
           expect(

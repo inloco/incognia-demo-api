@@ -38,7 +38,7 @@ RSpec.describe Assessments::AssessForm, type: :model do
         submit
       end
 
-      it "returns latest assessments" do
+      it 'returns latest assessments' do
         expect(Assessments::GetLatestAssessmentLogs).to receive(:call)
           .with(user:, installation_id:)
 

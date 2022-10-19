@@ -31,7 +31,7 @@ RSpec.describe Signups::Register, type: :service do
       register
     end
 
-    it "returns the assessment" do
+    it 'returns the assessment' do
       expect(register).to eq(signup_assessment)
     end
 

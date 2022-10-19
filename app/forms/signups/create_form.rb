@@ -31,11 +31,7 @@ module Signups
     end
 
     def structured_address=(address)
-      if address.present?
-        @structured_address = address.merge(locale: EN_US_LOCALE)
-      end
-
-      @structured_address
+      @structured_address = address&.merge(locale: EN_US_LOCALE)
     end
 
     private
