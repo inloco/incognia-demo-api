@@ -19,7 +19,7 @@ RSpec.describe AssessmentSerializer, type: :serializer do
 
   AssessmentLog.api_names.except(:onboarding).values.each do |api_name|
     context "when it is an #{api_name} assessment" do
-      let(:assessment) { create(:assessment_log, :login) }
+      let(:assessment) { create(:assessment_log, api_name) }
 
       it 'serializes assessment with incognia_id as id' do
         expect(serialized).to eq(

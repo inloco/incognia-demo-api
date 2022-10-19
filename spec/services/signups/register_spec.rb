@@ -63,10 +63,10 @@ RSpec.describe Signups::Register, type: :service do
       it 'requests Incognia w/ installation_id and address w/ default locale' do
         expected_address = Incognia::Address::Structured.new(**address)
 
-        allow(adapter).to receive(:register_signup) do |args|
-            expect(args[:installation_id]).to eq(installation_id)
-            expect(args[:address].to_hash).to eq(expected_address.to_hash)
-          end.and_return(signup_assessment)
+        expect(adapter).to receive(:register_signup) do |args|
+          expect(args[:installation_id]).to eq(installation_id)
+          expect(args[:address].to_hash).to eq(expected_address.to_hash)
+        end.and_return(signup_assessment)
 
         register
       end

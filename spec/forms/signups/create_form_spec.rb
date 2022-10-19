@@ -95,13 +95,13 @@ RSpec.describe Signups::CreateForm, type: :model do
           ).to eq(structured_address: enriched_address)
         end
 
-        it 'register signup w/ installation_id and address w/ default locale' do
-          allow(Signups::Register).to receive(:call) do |args|
-              expect(args[:installation_id]).to eq(installation_id)
-              expect(args[:structured_address].to_hash).to eq(
-                enriched_address.to_hash
-              )
-            end.and_return(signup_assessment)
+        it 'registers signup w/ installation_id and address w/ default locale' do
+          expect(Signups::Register).to receive(:call) do |args|
+            expect(args[:installation_id]).to eq(installation_id)
+            expect(args[:structured_address].to_hash).to eq(
+              enriched_address.to_hash
+            )
+          end.and_return(signup_assessment)
 
           submit
         end
