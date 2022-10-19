@@ -13,6 +13,16 @@ RSpec.describe "Sessions", type: :request do
     end
     let(:installation_id) { SecureRandom.hex }
 
+    context 'when user does not exist' do
+      let(:user) { build(:user) }
+
+      it 'returns http not found' do
+        dispatch_request
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
     context 'when validations succeed' do
       before do
         allow(Signin::PasswordlessForm).to receive(:new)
@@ -85,7 +95,7 @@ RSpec.describe "Sessions", type: :request do
           .errors
           .tap { |e| e.add(attribute, message) }
       end
-      let(:attribute) { :user }
+      let(:attribute) { :installation_id }
       let(:message) { 'cant be blank' }
 
       it "returns http unprocessable entity" do
