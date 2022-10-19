@@ -17,27 +17,25 @@ RSpec.describe Assessments::GetLatestAssessmentLogs, type: :service do
       )
     end
   end
-  AssessmentLog.api_names.except(:onboarding).values.each do |api_name|
-    let!("#{api_name}_assessments") do
-      3.times.map do |i|
-        create(
-          :assessment_log,
-          api_name,
-          account_id: user.account_id,
-          installation_id:,
-          created_at: i.day.from_now
-        )
-      end
+
+  let!(:non_onboarding_assessments) do
+    3.times.map do |i|
+      create(
+        :assessment_log,
+        :non_onboarding,
+        account_id: user.account_id,
+        installation_id:,
+        created_at: i.day.from_now
+      )
     end
   end
   let!(:random_assessments) { create_list(:assessment_log, 5) }
-  let!(:latest_assessments) {
-    assessments = AssessmentLog.api_names.except(:onboarding).values.map do |api_name|
-      send("#{api_name}_assessments").last
-    end.flatten
-
-    assessments << onboarding_assessments.last
-  }
+  let!(:latest_assessments) do
+    [
+      onboarding_assessments.last,
+      non_onboarding_assessments.group_by(&:api_name).values.map(&:last)
+    ].flatten
+  end
 
   describe '.call' do
     it 'returns users last assessments for each use case' do

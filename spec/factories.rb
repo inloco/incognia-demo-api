@@ -33,12 +33,12 @@ FactoryBot.define do
       incognia_signup_id { SecureRandom.uuid }
     end
 
-    AssessmentLog.api_names.except(:onboarding).values.each do |api_name|
-      trait api_name.to_sym do
-        api_name { api_name.to_sym }
-        account_id { SecureRandom.uuid }
-        installation_id { SecureRandom.hex }
+    trait :non_onboarding do
+      api_name do
+        AssessmentLog.api_names.except(:onboarding).values.sample.to_sym
       end
+      account_id { SecureRandom.uuid }
+      installation_id { SecureRandom.hex }
     end
   end
 
