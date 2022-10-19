@@ -41,4 +41,14 @@ FactoryBot.define do
       end
     end
   end
+
+  factory :incognia_assessment, class: OpenStruct do
+    id { SecureRandom.uuid }
+    risk_assessment { [:low_risk, :unknown_risk, :high_risk].sample }
+
+    trait :signup do
+      id { SecureRandom.uuid }
+      request_id { SecureRandom.uuid }
+    end
+  end
 end

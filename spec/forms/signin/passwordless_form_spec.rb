@@ -15,8 +15,10 @@ RSpec.describe Signin::PasswordlessForm, type: :model do
     before do
       allow(Signin::Register).to receive(:call).and_return(login_assessment)
     end
-    let(:login_assessment) { OpenStruct.new(risk_assessment:) }
-    let(:risk_assessment) { [:low_risk, :unknown_risk, :high_risk].sample }
+    let(:login_assessment) { build(:incognia_assessment, risk_assessment:) }
+    let(:risk_assessment) do
+      attributes_for(:incognia_assessment)[:risk_assessment]
+    end
 
     context 'when attributes are valid' do
       let(:attrs) { { user:, installation_id: } }

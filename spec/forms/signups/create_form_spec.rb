@@ -39,7 +39,7 @@ RSpec.describe Signups::CreateForm, type: :model do
     before do
       allow(Signups::Register).to receive(:call).and_return(signup_assessment)
     end
-    let(:signup_assessment) { OpenStruct.new(id: SecureRandom.uuid) }
+    let(:signup_assessment) { build(:incognia_assessment, :signup) }
 
     context 'when attributes are valid' do
       let(:attrs) { { account_id:, email:, installation_id: } }

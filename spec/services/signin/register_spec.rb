@@ -6,7 +6,7 @@ RSpec.describe Signin::Register, type: :service do
     let(:user) { create(:user) }
     let(:installation_id) { SecureRandom.uuid }
 
-    let(:login_assessment) { OpenStruct.new(id: SecureRandom.uuid) }
+    let(:login_assessment) { build(:incognia_assessment) }
 
     before do
       allow(IncogniaApi::Adapter).to receive(:new).and_return(adapter)

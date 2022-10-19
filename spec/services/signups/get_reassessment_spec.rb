@@ -6,10 +6,7 @@ RSpec.describe Signups::GetReassessment, type: :service do
     let(:user) { create(:user) }
 
     let(:signup_assessment) do
-      OpenStruct.new(
-        id: user.incognia_signup_id,
-        request_id: SecureRandom.uuid
-      )
+      build(:incognia_assessment, :signup, id: user.incognia_signup_id)
     end
 
     before do

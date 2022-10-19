@@ -8,12 +8,7 @@ RSpec.describe Signups::Register, type: :service do
     let(:installation_id) { SecureRandom.hex }
     let(:structured_address) { nil }
 
-    let(:signup_assessment) do
-      OpenStruct.new(
-        id: SecureRandom.uuid,
-        request_id: SecureRandom.uuid
-      )
-    end
+    let(:signup_assessment) { build(:incognia_assessment, :signup) }
 
     before do
       allow(IncogniaApi::Adapter).to receive(:new).and_return(adapter)
