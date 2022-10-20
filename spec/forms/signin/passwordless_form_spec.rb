@@ -12,9 +12,8 @@ RSpec.describe Signin::PasswordlessForm, type: :model do
   describe '#submit' do
     subject(:submit) { form.submit }
 
-    before { allow(IncogniaApi::Adapter).to receive(:new).and_return(adapter) }
-    let(:adapter) do
-      instance_double(IncogniaApi::Adapter, register_login: login_assessment)
+    before do
+      allow(Signin::Register).to receive(:call).and_return(login_assessment)
     end
     let(:login_assessment) { OpenStruct.new(risk_assessment:) }
     let(:risk_assessment) { [:low_risk, :unknown_risk, :high_risk].sample }
@@ -24,9 +23,8 @@ RSpec.describe Signin::PasswordlessForm, type: :model do
       let(:user) { build(:user) }
       let(:installation_id) { SecureRandom.uuid }
 
-      it 'requests Incognia with account_id and installation_id' do
-        expect(adapter).to receive(:register_login)
-          .with(account_id: user.account_id, installation_id:)
+      it 'registers login with account_id and installation_id' do
+        expect(Signin::Register).to receive(:call).with(user:, installation_id:)
 
         submit
       end
@@ -80,8 +78,8 @@ RSpec.describe Signin::PasswordlessForm, type: :model do
     context 'when attributes are invalid' do
       let(:params) { {} }
 
-      it 'does not request Incognia' do
-        expect(adapter).to_not receive(:register_login)
+      it 'does not register login' do
+        expect(Signin::Register).to_not receive(:call)
 
         submit
       end
