@@ -27,6 +27,16 @@ RSpec.describe "Assessments", type: :request do
     let(:form_errors) { [] }
     let(:submit_return) { nil }
 
+    context 'when user does not exist' do
+      let(:user) { build(:user) }
+
+      it 'returns http not found' do
+        dispatch_request
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
     context 'when validations succeed' do
       let(:submit_return) { assessments }
       let(:assessments) { build_list(:assessment_log, 2) }
@@ -130,6 +140,16 @@ RSpec.describe "Assessments", type: :request do
       end
 
       expect(response.body).to eq(serializable_assessments.to_json)
+    end
+
+    context 'when user does not exist' do
+      let(:user) { build(:user) }
+
+      it 'returns http not found' do
+        dispatch_request
+
+        expect(response).to have_http_status(:not_found)
+      end
     end
   end
 end

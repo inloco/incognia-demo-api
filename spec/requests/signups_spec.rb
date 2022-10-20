@@ -32,6 +32,16 @@ RSpec.describe "Signups", type: :request do
       let(:service) { Signups::GetReassessment }
       let(:method) { :call }
     end
+
+    context 'when user does not exist' do
+      let(:user) { build(:user) }
+
+      it 'returns http not found' do
+        dispatch_request
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
   end
 
   describe "POST /create" do

@@ -2,7 +2,8 @@ class SessionsController < ApplicationController
   def create
     account_id = params.fetch(:account_id)
 
-    user = User.find_by!(account_id:)
+    user = User.find_by(account_id:)
+    return render nothing: true, status: :unauthorized unless user
 
     form = Signin::PasswordlessForm.new(
       user:,

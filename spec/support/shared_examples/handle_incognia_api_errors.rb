@@ -5,7 +5,7 @@ shared_examples_for 'handle Incognia API errors' do
         .and_raise(Incognia::APIError.new('', status: 404))
     end
 
-    it "returns http not found" do
+    it 'returns http not found' do
       dispatch_request
 
       expect(response).to have_http_status(:not_found)
@@ -23,6 +23,19 @@ shared_examples_for 'handle Incognia API errors' do
       dispatch_request
 
       expect(response).to have_http_status(422)
+    end
+  end
+
+  context 'when API returns authentication error' do
+    before do
+      allow(service).to receive(method)
+        .and_raise(Incognia::APIAuthenticationError.new(''))
+    end
+
+    it 'returns http internal error' do
+      dispatch_request
+
+      expect(response).to have_http_status(:error)
     end
   end
 
