@@ -16,16 +16,14 @@ RSpec.describe Assessments::AssessForm, type: :model do
       let(:attrs) { { user:, installation_id: } }
       let(:user) { build(:user) }
       let(:installation_id) { SecureRandom.uuid }
-      let(:returned_assessments) { [signup_assessment, login_assessment] }
+      let(:latest_assessment_logs) { build_list(:assessment_log, 2) }
 
       before do
         allow(Assessments::AssessSignup).to receive(:call)
-          .and_return(signup_assessment)
         allow(Assessments::AssessLogin).to receive(:call)
-          .and_return(login_assessment)
+        allow(Assessments::GetLatestAssessmentLogs).to receive(:call)
+          .and_return(latest_assessment_logs)
       end
-      let(:signup_assessment) { build(:assessments_assessment) }
-      let(:login_assessment) { build(:assessments_assessment) }
 
       it 'invokes assess signup service' do
         expect(Assessments::AssessSignup).to receive(:call).with(user:)
@@ -40,10 +38,13 @@ RSpec.describe Assessments::AssessForm, type: :model do
         submit
       end
 
-      it "returns requested assessments" do
+      it 'returns latest assessments' do
+        expect(Assessments::GetLatestAssessmentLogs).to receive(:call)
+          .with(user:, installation_id:)
+
         assessments = submit
 
-        expect(assessments).to match_array(returned_assessments)
+        expect(assessments).to match_array(latest_assessment_logs)
       end
     end
 

@@ -18,12 +18,5 @@ RSpec.describe Assessments::AssessLogin, type: :service do
 
       assess
     end
-
-    it 'returns an assessment' do
-      assessment = assess
-
-      expect(assessment.api_name).to eq(described_class::API_NAME)
-      expect(assessment.timestamp).to eq(time_now)
-    end
   end
 end

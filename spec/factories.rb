@@ -25,10 +25,30 @@ FactoryBot.define do
     expires_at { 2.minutes.from_now }
   end
 
-  factory :assessments_assessment, class: Assessments::Assessment do
-    api_name { Faker::Lorem.word }
-    timestamp { Time.now }
+  factory :assessment_log do
+    incognia_id { SecureRandom.uuid }
 
-    initialize_with { new(attributes) }
+    trait :onboarding do
+      api_name { :onboarding }
+      incognia_signup_id { SecureRandom.uuid }
+    end
+
+    trait :non_onboarding do
+      api_name do
+        AssessmentLog.api_names.except(:onboarding).values.sample.to_sym
+      end
+      account_id { SecureRandom.uuid }
+      installation_id { SecureRandom.hex }
+    end
+  end
+
+  factory :incognia_assessment, class: OpenStruct do
+    id { SecureRandom.uuid }
+    risk_assessment { [:low_risk, :unknown_risk, :high_risk].sample }
+
+    trait :signup do
+      id { SecureRandom.uuid }
+      request_id { SecureRandom.uuid }
+    end
   end
 end

@@ -1,9 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe "Assessments", type: :request do
-  describe "POST /assessments/assess" do
-    subject(:dispatch_request) { post "/assessments/assess", params:, headers: }
-    let(:params) { { account_id: user.account_id } }
+  describe "POST /users/:user_id/assessments/assess" do
+    subject(:dispatch_request) do
+      post "/users/#{user.account_id}/assessments/assess", headers:
+    end
     let(:user) { create(:user) }
     let(:headers) do
       {
@@ -28,7 +29,7 @@ RSpec.describe "Assessments", type: :request do
 
     context 'when validations succeed' do
       let(:submit_return) { assessments }
-      let(:assessments) { build_list(:assessments_assessment, 2) }
+      let(:assessments) { build_list(:assessment_log, 2) }
 
       it "invokes assess form" do
         expect(Assessments::AssessForm).to receive(:new)
@@ -86,6 +87,49 @@ RSpec.describe "Assessments", type: :request do
         expect(parsed_body).to have_key(:errors)
         expect(parsed_body.dig(:errors, attribute)).to include(message)
       end
+    end
+  end
+
+  describe "GET /users/:user_id/assessments/latest" do
+    subject(:dispatch_request) do
+      get "/users/#{user.account_id}/assessments/latest", headers:
+    end
+    let(:user) { create(:user) }
+    let(:headers) do
+      {
+        "ACCEPT" => "application/json",
+        SignupsController::INCOGNIA_INSTALLATION_ID_HEADER => installation_id
+      }
+    end
+    let(:installation_id) { SecureRandom.hex }
+
+    before do
+      allow(Assessments::GetLatestAssessmentLogs).to receive(:call)
+        .and_return(latest_assessments)
+    end
+    let(:latest_assessments) { build_list(:assessment_log, 2) }
+
+    it "returns http success" do
+      dispatch_request
+
+      expect(response).to have_http_status(:success)
+    end
+
+    it "fetches last assessments" do
+      expect(Assessments::GetLatestAssessmentLogs).to receive(:call)
+        .with(user:, installation_id:)
+
+      dispatch_request
+    end
+
+    it "returns latest assessments as JSON" do
+      dispatch_request
+
+      serializable_assessments = latest_assessments.map do |assessment|
+        AssessmentSerializer.new(assessment:)
+      end
+
+      expect(response.body).to eq(serializable_assessments.to_json)
     end
   end
 end

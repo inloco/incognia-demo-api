@@ -16,9 +16,12 @@ Rails.application.routes.draw do
     post :validate_qrcode, to: 'sessions#validate_qrcode'
   end
 
-  resource :assessments, only: [] do
-    member do
-      post :assess
+  resources :users, only: [] do
+    resource :assessments, only: [] do
+      member do
+        post :assess
+        get :latest
+      end
     end
   end
 
