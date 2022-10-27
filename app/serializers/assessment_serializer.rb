@@ -18,7 +18,7 @@ class AssessmentSerializer < BaseSerializer
   end
 
   def timestamp
-    assessment.created_at
+    assessment.created_at.to_i
   end
 
   private

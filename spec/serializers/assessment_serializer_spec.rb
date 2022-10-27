@@ -11,7 +11,7 @@ RSpec.describe AssessmentSerializer, type: :serializer do
         {
           'api_name' => assessment.api_name,
           'id' => assessment.incognia_signup_id,
-          'timestamp' => assessment.created_at,
+          'timestamp' => assessment.created_at.to_i,
         }
       )
     end
@@ -26,7 +26,7 @@ RSpec.describe AssessmentSerializer, type: :serializer do
           {
             'api_name' => assessment.api_name,
             'id' => assessment.incognia_id,
-            'timestamp' => assessment.created_at,
+            'timestamp' => assessment.created_at.to_i,
           }
         )
       end
